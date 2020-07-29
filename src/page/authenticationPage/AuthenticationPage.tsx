@@ -1,8 +1,11 @@
 import React from 'react';
+import BackgroundPage from '../../components/BackgroundPage';
 
 const AuthenticationPage = () => {
 	return (
-		<p> AuthenticationPage</p>
+		<BackgroundPage>
+			<p> AuthenticationPage</p>
+		</BackgroundPage>
 	)
 };
 

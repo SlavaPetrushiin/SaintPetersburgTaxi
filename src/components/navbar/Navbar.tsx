@@ -9,16 +9,24 @@ const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		root: {
 			flexGrow: 1,
+			position: "fixed",
+			top: 0,
+			left: 0,
+			right: 0,
 		},
 		toolbar:{
-			backgroundColor: "#bdbdbd"
+			backgroundColor: "yellow"
 		},
 		menuButton: {
 			marginRight: theme.spacing(2),
 		},
 		title: {
 			flexGrow: 1,
+			color: "#000000"
 		},
+		btn: {
+			color: "#000000"
+		}
 	}),
 );
 
@@ -32,8 +40,8 @@ const Navbar = () => {
 					<Typography variant="h6" className={classes.title}>
 						Saint Petersburg Taxi
 					</Typography>
-					<Button color="inherit">Login In</Button>
-					<Button color="inherit">Login Up</Button>
+					<Button className={classes.btn}>Login In</Button>
+					<Button className={classes.btn}>Login Up</Button>
 				</Toolbar>
 			</AppBar>
 		</div>
