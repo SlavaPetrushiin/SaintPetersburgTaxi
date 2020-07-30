@@ -2,6 +2,10 @@ import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
+interface Props {
+  children: JSX.Element[] | JSX.Element
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -11,16 +15,22 @@ const useStyles = makeStyles((theme: Theme) =>
 			backgroundPosition: "center",
 			backgroundRepeat: "no-repeat",
 			backgroundSize: "cover"
-    }
+		}, 
+		wrapper:{
+			maxWidth: 1200,
+			width: "100%",
+			margin: "0 auto",
+			paddingTop: 100,
+		}
   })
 );
 
-const BackgroundPage = (props: any) => {
+const BackgroundPage = (props: Props) => {
 	const classes = useStyles();
 
 	return (
 		<div className={classes.root}>
-			<Grid container spacing={3}>
+			<Grid container spacing={2} className={classes.wrapper}>
 				<Grid item xs={12}>
 					{props.children}
 				</Grid>

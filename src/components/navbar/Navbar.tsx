@@ -3,7 +3,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
+import { NONAME } from 'dns';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -25,7 +26,14 @@ const useStyles = makeStyles((theme: Theme) =>
 			color: "#000000"
 		},
 		btn: {
-			color: "#000000"
+			color: "#000000",
+			fontWeight: 600,
+			textDecoration: "none",
+			marginLeft: 20,
+
+			"&:hover":{
+				borderBottom: "1px solid black"
+			}
 		}
 	}),
 );
@@ -40,8 +48,8 @@ const Navbar = () => {
 					<Typography variant="h6" className={classes.title}>
 						Saint Petersburg Taxi
 					</Typography>
-					<Button className={classes.btn}>Login In</Button>
-					<Button className={classes.btn}>Login Up</Button>
+					<Link className={classes.btn} to={"/login"}>Login In</Link>
+					<Link className={classes.btn} to={"/register"}>Login Up</Link>
 				</Toolbar>
 			</AppBar>
 		</div>
