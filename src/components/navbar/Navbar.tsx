@@ -4,7 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import { NONAME } from 'dns';
+import LocalTaxiIcon from '@material-ui/icons/LocalTaxi';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		toolbar:{
 			backgroundColor: "yellow"
+		},
+		logo: {
+			color: "black",
+			marginRight: 10
 		},
 		menuButton: {
 			marginRight: theme.spacing(2),
@@ -35,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 				borderBottom: "1px solid black"
 			}
 		}
-	}),
+	})
 );
 
 const Navbar = () => {
@@ -45,6 +49,7 @@ const Navbar = () => {
 		<div className={classes.root}>
 			<AppBar position="static">
 				<Toolbar className={classes.toolbar}>
+					<LocalTaxiIcon className={classes.logo}/>
 					<Typography variant="h6" className={classes.title}>
 						Saint Petersburg Taxi
 					</Typography>
