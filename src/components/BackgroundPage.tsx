@@ -21,6 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
 			width: "100%",
 			margin: "0 auto",
 			paddingTop: 100,
+			display: "flex",
+			justifyContent: "center",
+			alignItems: "center",
+		},
+		bgItem: {
+			maxWidth: 450,
 		}
   })
 );
@@ -31,7 +37,7 @@ const BackgroundPage = (props: Props) => {
 	return (
 		<div className={classes.root}>
 			<Grid container spacing={2} className={classes.wrapper}>
-				<Grid item xs={12}>
+				<Grid item xs={12} className={classes.bgItem}>
 					{props.children}
 				</Grid>
 			</Grid>
