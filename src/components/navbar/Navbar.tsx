@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
 			right: 0,
 		},
 		toolbar:{
-			backgroundColor: "yellow"
+			backgroundColor: "#FFD700"
 		},
 		logo: {
 			color: "black",

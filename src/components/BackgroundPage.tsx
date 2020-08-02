@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 			maxWidth: 1200,
 			width: "100%",
 			margin: "0 auto",
-			paddingTop: 100,
+			paddingTop: 150,
 			display: "flex",
 			justifyContent: "center",
 			alignItems: "center",
