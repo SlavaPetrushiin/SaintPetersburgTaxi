@@ -13,7 +13,7 @@ type IProps = {
 	id: string
 	value: string
 	required: boolean
-	onChange: (e: React.ChangeEvent<HTMLInputElement>, name: string) => void
+	onChange: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +40,7 @@ const FormControlField = (props: IProps) => {
 				name={props.name}
 				required={props.required}
 				value={props.value}
-				onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.onChange(e, props.name)}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.onChange(e, props.id)}
 				className={classes.input}
 				startAdornment={
 					<InputAdornment position="start">

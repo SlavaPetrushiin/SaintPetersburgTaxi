@@ -20,7 +20,7 @@ type ISignInError = {
 	error: string
 }
 //thunk type
-type IThunk = ThunkAction<void, RootState, unknown, IAllTypes>
+export type IThunk = ThunkAction<void, RootState, unknown, IAllTypes>
 
 type IAllTypes = ISignInSuccess | ISignInError
 

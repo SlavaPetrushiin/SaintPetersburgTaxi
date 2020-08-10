@@ -6,10 +6,10 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch } from 'react-redux';
-import {fetchLogin} from '../../store/signIn/signInReducer'
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import FormControlField from '../../components/FormControlField';
+import { v4 as uuidv4 } from 'uuid';
 
 type IInput = {
 	type: string
@@ -25,7 +25,7 @@ const inputs: Array<IInput>  = [
 		type: "email",
 		name: "email",
 		title: "Email",
-		id: "email",
+		id: uuidv4(),
 		value: "",
 		required: true
 	},
@@ -33,7 +33,7 @@ const inputs: Array<IInput>  = [
 		type: "password",
 		name: "password",
 		title: "Password",
-		id: "password",
+		id: uuidv4(),
 		value: "",
 		required: true
 	},	
@@ -69,9 +69,9 @@ const AuthenticationPage = () => {
 		setDisabled(false);
 	};
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
 		let newFields = fields.map((field: IInput) => {
-			if(field.name === name){
+			if(field.id === id){
 				field.value = e.currentTarget.value;
 			}
 			return field;
@@ -87,7 +87,7 @@ const AuthenticationPage = () => {
         		Войти
       		</Typography>
 					{
-						fields.map((inp: any) => <FormControlField {...inp} onChange={handleChange} />)
+						fields.map((inp: IInput) => <FormControlField {...inp} onChange={handleChange} />)
 					}
 					{
 						error !== null && <p className={classes.error}>{error}</p>
