@@ -5,6 +5,7 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import FormControlField from '../../components/FormControlField';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch } from 'react-redux';
+import { fetchRegister } from '../../store/signUp/signUpReducer';
 
 type IInput = {
 	type: string
@@ -71,6 +72,7 @@ const RegisterPage = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const [fields, setFields] = useState<IInput[]>(inputs);
+	const [disabled, setDisabled] = useState(false);
 	
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
@@ -82,6 +84,12 @@ const RegisterPage = () => {
 		})
 		setFields(newFields)
 	};
+
+	const register = async () => {
+		setDisabled(true);
+		await dispatch(fetchRegister("free@samuraijs.com", "Slava", "Piter", "123456789"))
+		setDisabled(false);
+	}
 
 	return (
 		<BackgroundPage>
@@ -98,8 +106,8 @@ const RegisterPage = () => {
 					}
 					<Button 
 						variant="contained"
-						//onClick={login}
-						//disabled={disabled}
+						onClick={register}
+						disabled={disabled}
 					>
 						Отправить
 					</Button>

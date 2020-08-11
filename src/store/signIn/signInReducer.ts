@@ -26,6 +26,12 @@ type IAllTypes = ISignInSuccess | ISignInError
 
 const signInReducer = (state = initialState, action: IAllTypes): IInitialState => {
 	switch(action.type){
+		case SIGNIN_SUCCESS:
+			return {
+				...state,
+				error: null,
+				token: action.token
+			}
 		case SIGNIN_ERROR:
 			return {
 				...state,
@@ -35,7 +41,6 @@ const signInReducer = (state = initialState, action: IAllTypes): IInitialState =
 			return state;
 	}
 };
-
 
 // actionCreator
 const signInSuccess = (token: string): ISignInSuccess  => ({type: SIGNIN_SUCCESS, token});
@@ -49,11 +54,12 @@ export const fetchLogin = (email: string, password: string): IThunk => async (di
 		if(!response.success){
 			throw new Error(response.error)
 		}
+
+		dispatch(signInSuccess(response.token));
 	}
 	catch(e){
 		dispatch(signInError(e.message))
 	}
 }
-
 
 export default signInReducer;

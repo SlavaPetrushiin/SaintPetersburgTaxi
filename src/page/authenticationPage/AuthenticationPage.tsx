@@ -10,6 +10,7 @@ import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import FormControlField from '../../components/FormControlField';
 import { v4 as uuidv4 } from 'uuid';
+import { fetchLogin } from '../../store/signIn/signInReducer';
 
 type IInput = {
 	type: string
@@ -65,7 +66,7 @@ const AuthenticationPage = () => {
 
 	const login = async () => {
 		setDisabled(true);
-		//await dispatch(fetchLogin(email, password));
+		await dispatch(fetchLogin(fields[0].value, fields[1].value));  ///Поправить
 		setDisabled(false);
 	};
 
