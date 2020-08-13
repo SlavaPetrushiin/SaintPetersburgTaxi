@@ -1,11 +1,9 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunk, {ThunkMiddleware} from "redux-thunk";
-import signInReducer from "./signIn/signInReducer";
-import signUpReducer from "./signUp/signUpReducer";
+import authenticationReducer from "./signIn/authenticationReducer";
 
 const rootReducer = combineReducers({
-	signIn: signInReducer,
-	signUp: signUpReducer
+	authentication: authenticationReducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>;

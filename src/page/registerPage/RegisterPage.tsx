@@ -5,7 +5,11 @@ import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import FormControlField from '../../components/FormControlField';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch } from 'react-redux';
-import { fetchRegister } from '../../store/signUp/signUpReducer';
+import { fetchRegister } from '../../store/signIn/authenticationReducer';
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
+import withAuthRedirect from '../../hoc/withAuthRedirect';
+
 
 type IInput = {
 	type: string
@@ -73,8 +77,8 @@ const RegisterPage = () => {
 	const dispatch = useDispatch();
 	const [fields, setFields] = useState<IInput[]>(inputs);
 	const [disabled, setDisabled] = useState(false);
+	const error = useSelector((store: RootState) => store.authentication.error); 
 	
-
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
 		let newFields = fields.map((field: IInput) => {
 			if(field.id === id){
@@ -102,7 +106,7 @@ const RegisterPage = () => {
 						fields.map((inp: IInput) => <FormControlField {...inp} onChange={handleChange} />)
 					}
 					{
-						//error !== null && <p className={classes.error}>{error}</p>
+						error !== null && <p className={classes.error}>{error}</p>
 					}
 					<Button 
 						variant="contained"
@@ -117,4 +121,4 @@ const RegisterPage = () => {
 	)
 };
 
-export default RegisterPage;
+export default withAuthRedirect(RegisterPage);

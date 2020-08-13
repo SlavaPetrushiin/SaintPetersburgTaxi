@@ -10,7 +10,8 @@ import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import FormControlField from '../../components/FormControlField';
 import { v4 as uuidv4 } from 'uuid';
-import { fetchLogin } from '../../store/signIn/signInReducer';
+import { fetchLogin } from '../../store/signIn/authenticationReducer';
+import withAuthRedirect from '../../hoc/withAuthRedirect';
 
 type IInput = {
 	type: string
@@ -62,7 +63,7 @@ const AuthenticationPage = () => {
 	const [fields, setFields] = useState<IInput[]>(inputs)
 	const dispatch = useDispatch();
 	const [disabled, setDisabled] = useState(false);
-	const error = useSelector((store: RootState) => store.signIn.error ); 
+	const error = useSelector((store: RootState) => store.authentication.error ); 
 
 	const login = async () => {
 		setDisabled(true);
@@ -106,5 +107,4 @@ const AuthenticationPage = () => {
 	)
 };
 
-export default AuthenticationPage;
-
+export default withAuthRedirect(AuthenticationPage);

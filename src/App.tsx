@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from './store/store';
 
 function App() {
-	let token = useSelector((store: RootState) => store.signIn.token);
+	let token = useSelector((store: RootState) => store.authentication.token);
 
 	let routes = (
 		<Switch>
