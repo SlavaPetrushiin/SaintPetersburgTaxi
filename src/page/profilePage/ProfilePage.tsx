@@ -1,83 +1,89 @@
 import React, { useState } from 'react';
-import BackgroundPage from '../../components/BackgroundPage';
-import { useSelector } from 'react-redux';
-import { Card } from '@material-ui/core';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-//@ts-ignore
-import MaskedInput from 'react-text-mask';
+import BackgroundPage from '../../components/BackgroundPage/BackgroundPage';
+import { Card, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { v4 as uuidv4 } from 'uuid';
 //@ts-ignore
 import Cards from 'react-credit-cards';
+import 'react-credit-cards/es/styles-compiled.css';
+import Input from '../../components/UI/Input';
 
-interface TextMaskCustomProps {
-	inputRef: (ref: HTMLInputElement | null) => void;
-}
-
-function TextMaskCustom(props: TextMaskCustomProps) {
-	const { inputRef, ...other } = props;
-
-	return (
-		<MaskedInput
-			{...other}
-			ref={(ref: any) => {
-				inputRef(ref ? ref.inputElement : null);
-			}}
-			mask={[ /[1-9]/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-			placeholderChar={'\u2000'}
-			showMask={true}
-			guide={true}
-		/>
-	);
-}
+const useStyles = makeStyles({
+	cardP: {
+		padding: 15
+	}
+});
 
 
 const ProfilePage = () => {
-	const [state, setState] = useState({
-		cvc: '',
-		expiry: '',
-		focus: '',
-		name: '',
-		number: '',
-	});
-
-  const [values, setValues] = useState({
-    textmask: '0000-0000-0000-0000',
-    numberformat: '1320',
-	});
-	
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
+	const classes = useStyles();
+	const [number, setNumber] = useState("");
+	const [name, setName] = useState("");
+	const [expiry, setExpiry] = useState("");
+	const [cvc, setCvc] = useState("");
+	const [focus, setFocus] = useState("");
 
 	return (
 		<BackgroundPage>
-			<Card>
-				<div id="PaymentForm">
-					<Cards
-						cvc={state.cvc}
-						expiry={state.expiry}
-						focused={state.focus}
-						name={state.name}
-						number={state.number}
+			<Card className={classes.cardP}>
+				<Cards
+					cvc={cvc}
+					expiry={expiry}
+					focused={focus}
+					name={name}
+					number={number}
+				/>
+				<form className={"card__form"}>
+
+					<Input 
+						type="text"
+						id={uuidv4()}
+						value={""}
+						placeholder={"Card number"}
+						name={"number"}
 					/>
-					<FormControl>
-						<InputLabel htmlFor="formatted-text-mask-input">react-text-mask</InputLabel>
-						<Input
-							value={values.textmask}
-							onChange={handleChange}
-							name="textmask"
-							id="formatted-text-mask-input"
-							inputComponent={TextMaskCustom as any}
-						/>
-					</FormControl>
 
-
-				</div>
+					<input 
+						className={"card__input"}
+						maxLength={16}
+						type="tel"
+						name="number"
+						placeholder="Card number"
+						value={number}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNumber(e.currentTarget.value)}
+						onFocus={(e: any) => setFocus(e.currentTarget.name)}
+					/>
+					<input 
+						className={"card__input"}
+						type="text"
+						name="name"
+						placeholder="Name"
+						value={name}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value)}
+						onFocus={(e: any) => setFocus(e.currentTarget.name)}
+					/>
+					<input 
+						className={"card__input"}
+						maxLength={4}
+						type="tel"
+						name="expiry"
+						placeholder="MM/YY"
+						value={expiry}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setExpiry(e.currentTarget.value)}
+						onFocus={(e: any) => setFocus(e.currentTarget.name)}
+					/>
+					<input 
+						className={"card__input"}
+						maxLength={3}
+						type="tel"
+						name="cvc"
+						placeholder="CVC"
+						value={cvc}
+						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCvc(e.currentTarget.value)}
+						onFocus={(e: any) => setFocus(e.currentTarget.name)}
+					/>
+					<Button variant="contained" color="primary">Send</Button>
+				</form>
 			</Card>
 		</BackgroundPage >
 	)

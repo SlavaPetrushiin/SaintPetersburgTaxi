@@ -1,3 +1,7 @@
+*{
+	box-sizing: border-box;
+}
+
 .App {
   text-align: center;
 }
@@ -26,6 +30,23 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.card__form{
+	display: flex;
+	flex-direction: column;
+}
+
+.card__input{
+	margin-bottom: 15px;
+	padding: 18.5px 14px;
+}
+.card__input:first-child{
+	margin-top: 15px;
+}
+
+.card__input:last-child{
+	margin-bottom: 0;
 }
 
 @keyframes App-logo-spin {

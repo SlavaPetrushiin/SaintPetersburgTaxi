@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import BackgroundPage from '../../components/BackgroundPage';
+import BackgroundPage from '../../components/BackgroundPage/BackgroundPage';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';

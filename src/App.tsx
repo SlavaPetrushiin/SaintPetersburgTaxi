@@ -22,15 +22,15 @@ function App() {
 		</Switch>
 	);
 
-		if(token !== null){
-			routes = (
-				<Switch>
-					<Route exact path='/profile' component={ProfilePage} />
-					<Route exact path='/map' component={MapPage} />
-					<Redirect to="/profile" />
-				</Switch>
-			);			
-		}
+	if (token !== null) {
+		routes = (
+			<Switch>
+				<Route exact path='/profile' component={ProfilePage} />
+				<Route exact path='/map' component={MapPage} />
+				<Redirect to="/profile" />
+			</Switch>
+		);
+	}
 
 	return (
 		<>
