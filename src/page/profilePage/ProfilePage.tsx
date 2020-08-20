@@ -8,12 +8,39 @@ import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 import Input from '../../components/UI/Input';
 
+export type IValidation = {
+	required: boolean
+	maxLength?: number
+}
+
+type IField = {
+	name: keyof FormControlsType
+	value: string
+	type: string
+	id: string
+	errorMessage: string
+	placeholder?: string
+	valid: boolean
+	touched: boolean
+	validation: IValidation
+}
+
+export type FormControlsType = {
+	number: IField
+	name: IField
+	expiry: IField
+	cvc: IField
+}
+
+type IState = {
+	formControls: FormControlsType
+}
+
 const useStyles = makeStyles({
 	cardP: {
 		padding: 15
 	}
 });
-
 
 const ProfilePage = () => {
 	const classes = useStyles();
@@ -22,6 +49,82 @@ const ProfilePage = () => {
 	const [expiry, setExpiry] = useState("");
 	const [cvc, setCvc] = useState("");
 	const [focus, setFocus] = useState("");
+	const [state, setState] = useState<IState>({
+		formControls: {
+			number: {
+				value: "",
+				name: "number",
+				type: "number",
+				id: uuidv4(),
+				errorMessage: "Введите номер карты",
+				placeholder: "Card number",
+				valid: false,
+				touched: false,
+				validation: {
+					required: true,
+					maxLength: 16
+				}
+			},
+			name: {
+				value: "",
+				name: "name",
+				type: "text",
+				id: uuidv4(),
+				errorMessage: "Введите имя",
+				placeholder: "Name",
+				valid: false,
+				touched: false,
+				validation: {
+					required: true
+				}
+			},
+			expiry: {
+				value: "",
+				name: "expiry",
+				type: "date",
+				id: uuidv4(),
+				errorMessage: "Выбирете дату",
+				valid: false,
+				touched: false,
+				validation: {
+					required: true
+				}
+			},
+			cvc: {
+				value: "",
+				name: "cvc",
+				type: "number",
+				id: uuidv4(),
+				errorMessage: "Введите cvc",
+				valid: false,
+				touched: false,
+				validation: {
+					required: true,
+					maxLength: 10
+				}
+			},
+		}
+	});
+
+	const onChange = (value: string, name: keyof FormControlsType) => {
+		const formControls = {...state.formControls} as FormControlsType;
+		const control = {...formControls[name]};
+		
+		control.value = value;
+		control.touched = true;
+
+		formControls[name] = control;
+
+		setState({formControls});
+	};
+
+	const renderInput = () => {
+		return (Object.keys(state.formControls) as Array<keyof FormControlsType>).map(name => {
+			const input = state.formControls[name];
+			return <Input {...input} onChange={onChange} key={input.id}/>
+		})
+	} 
+
 
 	return (
 		<BackgroundPage>
@@ -33,55 +136,8 @@ const ProfilePage = () => {
 					name={name}
 					number={number}
 				/>
-				<form className={"card__form"}>
-
-					<Input 
-						type="text"
-						id={uuidv4()}
-						value={""}
-						placeholder={"Card number"}
-						name={"number"}
-					/>
-
-					<input 
-						className={"card__input"}
-						maxLength={16}
-						type="tel"
-						name="number"
-						placeholder="Card number"
-						value={number}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNumber(e.currentTarget.value)}
-						onFocus={(e: any) => setFocus(e.currentTarget.name)}
-					/>
-					<input 
-						className={"card__input"}
-						type="text"
-						name="name"
-						placeholder="Name"
-						value={name}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.currentTarget.value)}
-						onFocus={(e: any) => setFocus(e.currentTarget.name)}
-					/>
-					<input 
-						className={"card__input"}
-						maxLength={4}
-						type="tel"
-						name="expiry"
-						placeholder="MM/YY"
-						value={expiry}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setExpiry(e.currentTarget.value)}
-						onFocus={(e: any) => setFocus(e.currentTarget.name)}
-					/>
-					<input 
-						className={"card__input"}
-						maxLength={3}
-						type="tel"
-						name="cvc"
-						placeholder="CVC"
-						value={cvc}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCvc(e.currentTarget.value)}
-						onFocus={(e: any) => setFocus(e.currentTarget.name)}
-					/>
+				<form className="card__form">
+					{renderInput()}
 					<Button variant="contained" color="primary">Send</Button>
 				</form>
 			</Card>

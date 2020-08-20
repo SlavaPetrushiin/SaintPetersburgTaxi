@@ -1,22 +1,29 @@
 import React from 'react';
 import classes from './Input.module.css';
+import { IValidation, FormControlsType } from '../../page/profilePage/ProfilePage';
 
 interface IProps{
-	onChange?: (value: string, id: string) => void
+	onChange?: (value: string, name: keyof FormControlsType) => void
 	type?: string
 	label?: string
 	error?: string
+	name: keyof FormControlsType
 	id: string
 	value: string
-	placeholder: string
-	name: string
+	placeholder?: string
+	errorMessage: string
+	valid: boolean
+	touched: boolean
+	validation: IValidation
 }
 
 const Input = (props: IProps) => {
 	const inputType = props.type || "text";
 	const onChange = props.onChange || function(){};
-	const {id, value, placeholder, name, label, error} = props;
+	const {id, value, placeholder, label, name, error} = props;
+	const maxLength = props.validation.maxLength;
 	const cls = [classes.Input];
+
 
 	return (
 		<div className={cls.join(' ')}>
@@ -26,10 +33,11 @@ const Input = (props: IProps) => {
 			<input
 				type={inputType}
 				id={id}
+				name={name}
 				value={value}
 				placeholder={placeholder}
-				name={name}
-				onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.currentTarget.value, id)}
+				maxLength={maxLength}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.currentTarget.value, name)}
 			/>
 
 			{!!error && <span>{error}</span>}
