@@ -22,6 +22,7 @@ type IField = {
 	placeholder?: string
 	valid: boolean
 	touched: boolean
+	shouldValidate: boolean
 	validation: IValidation
 }
 
@@ -36,6 +37,13 @@ type IState = {
 	formControls: FormControlsType
 }
 
+type ICard = {
+	cvc: string
+	expiry: string
+	name: string
+	number: string
+}
+
 const useStyles = makeStyles({
 	cardP: {
 		padding: 15
@@ -44,11 +52,13 @@ const useStyles = makeStyles({
 
 const ProfilePage = () => {
 	const classes = useStyles();
-	const [number, setNumber] = useState("");
-	const [name, setName] = useState("");
-	const [expiry, setExpiry] = useState("");
-	const [cvc, setCvc] = useState("");
-	const [focus, setFocus] = useState("");
+	const [focus, setFocus] = useState("")
+	const [bankCard, setBankCard] = useState<ICard>({
+    cvc: '',
+    expiry: '',
+    name: '',
+    number: '',
+	});
 	const [state, setState] = useState<IState>({
 		formControls: {
 			number: {
@@ -56,6 +66,7 @@ const ProfilePage = () => {
 				name: "number",
 				type: "number",
 				id: uuidv4(),
+				shouldValidate: true,
 				errorMessage: "Введите номер карты",
 				placeholder: "Card number",
 				valid: false,
@@ -70,6 +81,7 @@ const ProfilePage = () => {
 				name: "name",
 				type: "text",
 				id: uuidv4(),
+				shouldValidate: true,
 				errorMessage: "Введите имя",
 				placeholder: "Name",
 				valid: false,
@@ -83,6 +95,7 @@ const ProfilePage = () => {
 				name: "expiry",
 				type: "date",
 				id: uuidv4(),
+				shouldValidate: true,
 				errorMessage: "Выбирете дату",
 				valid: false,
 				touched: false,
@@ -95,46 +108,80 @@ const ProfilePage = () => {
 				name: "cvc",
 				type: "number",
 				id: uuidv4(),
+				shouldValidate: true,
 				errorMessage: "Введите cvc",
 				valid: false,
 				touched: false,
 				validation: {
 					required: true,
-					maxLength: 10
+					maxLength: 3
 				}
 			},
 		}
 	});
 
+	const validateControl = (value: string, validation: IValidation) => {
+		if(!validation){
+			return true;
+		}
+
+		let isValid = true;
+
+		if(validation.required){
+			isValid = value.trim() !== "" && isValid;
+		}
+
+		if(validation.maxLength){
+			isValid = value.length <= validation.maxLength && isValid;
+		}
+
+		return isValid;
+	}
+
 	const onChange = (value: string, name: keyof FormControlsType) => {
 		const formControls = {...state.formControls} as FormControlsType;
 		const control = {...formControls[name]};
+		const newBankCard = {...bankCard};
+
+		if(control.name === "number" && !!control.validation.maxLength && value.length > control.validation.maxLength){
+			return;
+		}
+
+		if(control.name === "cvc" && !!control.validation.maxLength && value.length > control.validation.maxLength){
+			return;
+		}
 		
 		control.value = value;
 		control.touched = true;
+		control.valid = validateControl(control.value, control.validation);
+		newBankCard[name] = control.value;
 
 		formControls[name] = control;
 
 		setState({formControls});
+		setBankCard(newBankCard);
 	};
+
+	const onFocus = (name: string) => {
+		setFocus(name)
+	}
 
 	const renderInput = () => {
 		return (Object.keys(state.formControls) as Array<keyof FormControlsType>).map(name => {
 			const input = state.formControls[name];
-			return <Input {...input} onChange={onChange} key={input.id}/>
+			return <Input {...input} onFocus={onFocus} onChange={onChange} key={input.id}/>
 		})
 	} 
-
 
 	return (
 		<BackgroundPage>
 			<Card className={classes.cardP}>
 				<Cards
-					cvc={cvc}
-					expiry={expiry}
+					cvc={bankCard.cvc}
+					expiry={bankCard.expiry}
 					focused={focus}
-					name={name}
-					number={number}
+					name={bankCard.name}
+					number={bankCard.number}
 				/>
 				<form className="card__form">
 					{renderInput()}
