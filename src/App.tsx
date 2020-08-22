@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import AuthenticationPage from './page/authenticationPage/AuthenticationPage';
 import Navbar from './components/navbar/Navbar';
@@ -8,10 +8,20 @@ import { Redirect } from 'react-router-dom';
 import RegisterPage from './page/registerPage/RegisterPage';
 import ProfilePage from './page/profilePage/ProfilePage';
 import MapPage from './page/mapPage/MapPage';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
+import {authenticationSuccess} from './store/signIn/authenticationReducer'
 
 function App() {
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		let token = localStorage.getItem("token");
+		if(token){
+			dispatch(authenticationSuccess(token))
+		}
+	}, [])
+
 	let token = useSelector((store: RootState) => store.authentication.token);
 
 	let routes = (

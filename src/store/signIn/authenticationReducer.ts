@@ -5,7 +5,7 @@ import signIn from '../../api/signIn';
 import signUp from '../../api/signUp';
 
 const initialState = {
-	token: "null" as null | string,
+	token: null as null | string,
 	error: null as null | string
 }
 
@@ -44,8 +44,8 @@ const authenticationReducer = (state = initialState, action: IAllTypes): IInitia
 };
 
 // actionCreator
-const authenticationSuccess = (token: string): ISignInSuccess  => ({type: AUTHENTICATION_SUCCESS, token});
-const authenticationError = (error: string): ISignInError  => ({type: AUTHENTICATION_ERROR, error});
+export const authenticationSuccess = (token: string): ISignInSuccess  => ({type: AUTHENTICATION_SUCCESS, token});
+export const authenticationError = (error: string): ISignInError  => ({type: AUTHENTICATION_ERROR, error});
 
 //thunkCreator
 export const fetchLogin = (email: string, password: string): IThunk => async (dispatch) => {
@@ -57,6 +57,7 @@ export const fetchLogin = (email: string, password: string): IThunk => async (di
 		}
 
 		dispatch(authenticationSuccess(response.token));
+		localStorage.setItem('token', response.token);
 	}
 	catch(e){
 		dispatch(authenticationError(e.message));
@@ -72,6 +73,7 @@ export const fetchRegister = (email: string, password: string, name: string, sur
 		}
 
 		dispatch(authenticationSuccess(response.token));
+		localStorage.setItem('token', response.token);
 	}
 	catch (e) {
 		dispatch(authenticationError(e.message));
