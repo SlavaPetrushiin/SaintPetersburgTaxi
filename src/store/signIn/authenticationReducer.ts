@@ -50,7 +50,7 @@ export const authenticationError = (error: string): ISignInError  => ({type: AUT
 //thunkCreator
 export const fetchLogin = (email: string, password: string): IThunk => async (dispatch) => {
 	try{
-		let response = await signIn.fetchSignIn(email, password);
+		let response = await signIn.fetchSignIn("test@test", "123123");
 
 		if(!response.success){
 			throw new Error(response.error);
@@ -63,6 +63,8 @@ export const fetchLogin = (email: string, password: string): IThunk => async (di
 		dispatch(authenticationError(e.message));
 	}
 }
+
+//username=test@test.com&password=123123
 
 export const fetchRegister = (email: string, password: string, name: string, surname: string): IThunk => async (dispatch) => {
 	try {
