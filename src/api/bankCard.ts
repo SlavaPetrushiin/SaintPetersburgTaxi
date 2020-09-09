@@ -1,19 +1,30 @@
 import axios from "axios"
 
+type PostCardResType = {
+	success: boolean
+	error?: string
+}
+
+type GetCardResType = {
+	id: string,
+	cardNumber: string,
+	expiryDate: string,
+	cardName: string,
+	cvc: string	
+}
+
 const fetchBankCard = {
-	async fetchPostCard(cardNumber: string, expiryDate: string, cardName: string, cvc: string, token: string){
-		let response = await axios.post("https://loft-taxi.glitch.me/card", {
+	fetchPostCard(cardNumber: string, expiryDate: string, cardName: string, cvc: string, token: string){
+		return axios.post<PostCardResType>("https://loft-taxi.glitch.me/card", {
 			cardNumber,
 			expiryDate,
 			cardName,
 			cvc,
 			token
-		})
-		return response.data
+		}).then(r => r.data)
 	},
-	async fetchGetCard(){
-		let response = await axios.post("https://loft-taxi.glitch.me/card")
-		return response.data
+	fetchGetCard(token: string){
+		return axios.get<GetCardResType>(`https://loft-taxi.glitch.me/card?token=${token}`).then(r => r.data)
 	}
 };
 

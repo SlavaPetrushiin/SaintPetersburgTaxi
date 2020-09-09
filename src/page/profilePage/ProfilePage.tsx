@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BackgroundPage from '../../components/BackgroundPage/BackgroundPage';
 import { Card, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,8 +7,12 @@ import { v4 as uuidv4 } from 'uuid';
 import Cards from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
 import Input from '../../components/UI/Input';
-import { fetchPostUserCard } from '../../store/userCard/userCard';
-import { useDispatch } from 'react-redux';
+import { fetchPostUserCard, fetchGetUserCard } from '../../store/userCard/userCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
 
 export type IValidation = {
 	required: boolean
@@ -49,11 +53,52 @@ type ICard = {
 const useStyles = makeStyles({
 	cardP: {
 		padding: 15
+	},
+	root: {
+		minWidth: 275,
+	},
+	bullet: {
+		display: 'inline-block',
+		margin: '0 2px',
+		transform: 'scale(0.8)',
+	},
+	title: {
+		fontSize: 14,
+	},
+	pos: {
+		marginBottom: 12,
 	}
 });
 
+
+const SaveDataCard = () => {
+	const classes = useStyles();
+	const bull = <span className={classes.bullet}>•</span>;
+
+	return (
+		<Card className={classes.root}>
+			<CardContent>
+				<Typography variant="h5" component="h2">
+					Профиль
+        </Typography>
+				<Typography className={classes.pos} color="textSecondary">
+					способы оплаты
+        </Typography>
+				<Typography variant="body2" component="p">
+					Платёжные данные обновлены. Теперь вы можете заказывать такси.
+        </Typography>
+			</CardContent>
+			<CardActions>
+				<Button size="small">Перейти на карту</Button>
+			</CardActions>
+		</Card>
+	)
+}
+
 const ProfilePage = () => {
 	const classes = useStyles();
+	const saveDataCard = useSelector((state: RootState) => state.userCard.success);
+	const getDataCard = useSelector((state: RootState) => state.userCard.card);
 	const dispatch = useDispatch();
 	const [focus, setFocus] = useState("")
 	const [bankCard, setBankCard] = useState<ICard>({
@@ -62,6 +107,11 @@ const ProfilePage = () => {
 		name: '',
 		number: '',
 	});
+
+	useEffect(() => {
+		dispatch(fetchGetUserCard())
+	}, []);
+
 	const [state, setState] = useState<IState>({
 		formControls: {
 			number: {
@@ -166,7 +216,7 @@ const ProfilePage = () => {
 	};
 
 	const onFocus = (name: string) => {
-		setFocus(name)
+		setFocus(name);
 	}
 
 	const renderInput = () => {
@@ -177,7 +227,6 @@ const ProfilePage = () => {
 	}
 
 	const sendDataCard = () => {
-		debugger
 		dispatch(fetchPostUserCard(
 			state.formControls.number.value,
 			state.formControls.expiry.value,
@@ -188,25 +237,32 @@ const ProfilePage = () => {
 
 	return (
 		<BackgroundPage>
-			<Card className={classes.cardP}>
-				<Cards
-					cvc={bankCard.cvc}
-					expiry={bankCard.expiry}
-					focused={focus}
-					name={bankCard.name}
-					number={bankCard.number}
-				/>
-				<form className="card__form">
-					{renderInput()}
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={sendDataCard}
-					>
-						Send
-					</Button>
-				</form>
-			</Card>
+			{
+				saveDataCard
+					? <SaveDataCard />
+					: (
+						<Card className={classes.cardP}>
+							<Cards
+								cvc={bankCard.cvc}
+								expiry={bankCard.expiry}
+								focused={focus}
+								name={bankCard.name}
+								number={bankCard.number}
+							/>
+							<form className="card__form">
+								{renderInput()}
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={sendDataCard}
+								>
+									Send
+						</Button>
+							</form>
+						</Card>
+					)
+			}
+
 		</BackgroundPage >
 	)
 };

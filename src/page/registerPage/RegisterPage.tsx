@@ -10,7 +10,6 @@ import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
 
-
 type IInput = {
 	type: string
 	title: string
