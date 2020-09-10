@@ -97,8 +97,7 @@ const SaveDataCard = () => {
 
 const ProfilePage = () => {
 	const classes = useStyles();
-	const saveDataCard = useSelector((state: RootState) => state.userCard.success);
-	const getDataCard = useSelector((state: RootState) => state.userCard.card);
+	const {success, card, successGet} = useSelector((state: RootState) => state.userCard);
 	const dispatch = useDispatch();
 	const [focus, setFocus] = useState("")
 	const [bankCard, setBankCard] = useState<ICard>({
@@ -111,6 +110,26 @@ const ProfilePage = () => {
 	useEffect(() => {
 		dispatch(fetchGetUserCard())
 	}, []);
+
+	useEffect(() => {
+		if(!!successGet){
+			const formControls = { ...state.formControls } as FormControlsType;
+			const newBankCard = { ...bankCard };
+	
+			formControls.cvc.value = card.cvc;
+			formControls.expiry.value = card.expiryDate;
+			formControls.name.value = card.cardName;
+			formControls.number.value = card.cardNumber;
+	
+			newBankCard.cvc = card.cvc;
+			newBankCard.expiry = card.expiryDate;
+			newBankCard.name = card.cardName;
+			newBankCard.number = card.cardNumber;
+	
+			setState({ formControls });
+			setBankCard(newBankCard);
+		}
+	}, [successGet])
 
 	const [state, setState] = useState<IState>({
 		formControls: {
@@ -238,7 +257,7 @@ const ProfilePage = () => {
 	return (
 		<BackgroundPage>
 			{
-				saveDataCard
+				success
 					? <SaveDataCard />
 					: (
 						<Card className={classes.cardP}>

@@ -30,6 +30,7 @@ export type IThunk = ThunkAction<void, RootState, unknown, any>
 
 const initialState = {
 	success: false,
+	successGet: false,
 	error: "",
 	card: {
 		id: "",
@@ -60,6 +61,7 @@ const userCard = (state: InitialStateType = initialState, action: AllTypes) => {
 			return {
 				...state,
 				success: false,
+				successGet: true,
 				error: "",
 				card: {
 					id: action.id,
