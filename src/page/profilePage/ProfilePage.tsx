@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import BackgroundPage from '../../components/BackgroundPage/BackgroundPage';
-import { Card, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { v4 as uuidv4 } from 'uuid';
-//@ts-ignore
-import Cards from 'react-credit-cards';
-import 'react-credit-cards/es/styles-compiled.css';
 import Input from '../../components/UI/Input';
 import { fetchPostUserCard, fetchGetUserCard } from '../../store/userCard/userCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
+import CreditCard from './CreditCard';
+import { validateControl } from '../../utilites/validateControl';
+import ModalSaveCard from './ModalSaveCard';
 
 export type IValidation = {
 	required: boolean
@@ -43,64 +38,18 @@ type IState = {
 	formControls: FormControlsType
 }
 
-type ICard = {
+export type CreditCardType = {
 	cvc: string
 	expiry: string
 	name: string
 	number: string
 }
 
-const useStyles = makeStyles({
-	cardP: {
-		padding: 15
-	},
-	root: {
-		minWidth: 275,
-	},
-	bullet: {
-		display: 'inline-block',
-		margin: '0 2px',
-		transform: 'scale(0.8)',
-	},
-	title: {
-		fontSize: 14,
-	},
-	pos: {
-		marginBottom: 12,
-	}
-});
-
-
-const SaveDataCard = () => {
-	const classes = useStyles();
-	const bull = <span className={classes.bullet}>•</span>;
-
-	return (
-		<Card className={classes.root}>
-			<CardContent>
-				<Typography variant="h5" component="h2">
-					Профиль
-        </Typography>
-				<Typography className={classes.pos} color="textSecondary">
-					способы оплаты
-        </Typography>
-				<Typography variant="body2" component="p">
-					Платёжные данные обновлены. Теперь вы можете заказывать такси.
-        </Typography>
-			</CardContent>
-			<CardActions>
-				<Button size="small">Перейти на карту</Button>
-			</CardActions>
-		</Card>
-	)
-}
-
 const ProfilePage = () => {
-	const classes = useStyles();
-	const {success, card, successGet} = useSelector((state: RootState) => state.userCard);
+	const { success, card, successGet } = useSelector((state: RootState) => state.userCard);
 	const dispatch = useDispatch();
 	const [focus, setFocus] = useState("")
-	const [bankCard, setBankCard] = useState<ICard>({
+	const [bankCard, setBankCard] = useState<CreditCardType>({
 		cvc: '',
 		expiry: '',
 		name: '',
@@ -112,20 +61,20 @@ const ProfilePage = () => {
 	}, []);
 
 	useEffect(() => {
-		if(!!successGet){
+		if (!!successGet) {
 			const formControls = { ...state.formControls } as FormControlsType;
 			const newBankCard = { ...bankCard };
-	
+
 			formControls.cvc.value = card.cvc;
 			formControls.expiry.value = card.expiryDate;
 			formControls.name.value = card.cardName;
 			formControls.number.value = card.cardNumber;
-	
+
 			newBankCard.cvc = card.cvc;
 			newBankCard.expiry = card.expiryDate;
 			newBankCard.name = card.cardName;
 			newBankCard.number = card.cardNumber;
-	
+
 			setState({ formControls });
 			setBankCard(newBankCard);
 		}
@@ -192,24 +141,6 @@ const ProfilePage = () => {
 		}
 	});
 
-	const validateControl = (value: string, validation: IValidation) => {
-		if (!validation) {
-			return true;
-		}
-
-		let isValid = true;
-
-		if (validation.required) {
-			isValid = value.trim() !== "" && isValid;
-		}
-
-		if (validation.maxLength) {
-			isValid = value.length <= validation.maxLength && isValid;
-		}
-
-		return isValid;
-	}
-
 	const onChange = (value: string, name: keyof FormControlsType) => {
 		const formControls = { ...state.formControls } as FormControlsType;
 		const control = { ...formControls[name] };
@@ -258,30 +189,14 @@ const ProfilePage = () => {
 		<BackgroundPage>
 			{
 				success
-					? <SaveDataCard />
-					: (
-						<Card className={classes.cardP}>
-							<Cards
-								cvc={bankCard.cvc}
-								expiry={bankCard.expiry}
-								focused={focus}
-								name={bankCard.name}
-								number={bankCard.number}
-							/>
-							<form className="card__form">
-								{renderInput()}
-								<Button
-									variant="contained"
-									color="primary"
-									onClick={sendDataCard}
-								>
-									Send
-						</Button>
-							</form>
-						</Card>
-					)
+					? <ModalSaveCard  />
+					: <CreditCard
+						bankCard={bankCard}
+						focus={onFocus}
+						sendDataCard={sendDataCard}
+						renderInput={renderInput}
+					/>
 			}
-
 		</BackgroundPage >
 	)
 };
