@@ -35,8 +35,8 @@ function App() {
 	if (token !== null) {
 		routes = (
 			<Switch>
-				<Route exact path='/profile' component={ProfilePage} />
-				<Route exact path='/map' component={MapPage} />
+				<Route path='/profile' component={ProfilePage} />
+				<Route path='/map' component={MapPage} />
 				<Redirect to="/profile" />
 			</Switch>
 		);
@@ -45,6 +45,7 @@ function App() {
 	return (
 		<>
 			<Navbar />
+			<MapPage />
 			{routes}
 		</>
 	);
