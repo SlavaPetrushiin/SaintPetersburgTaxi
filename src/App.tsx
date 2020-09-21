@@ -10,43 +10,44 @@ import ProfilePage from './page/profilePage/ProfilePage';
 import MapPage from './page/mapPage/MapPage';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
-import {authenticationSuccess} from './store/signIn/authenticationReducer'
+import { authenticationSuccess } from './store/signIn/authenticationReducer'
 
-function App() {
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		let token = localStorage.getItem("token");
-		if(token){
-			dispatch(authenticationSuccess(token))
-		}
-	}, [])
-
-	let token = useSelector((store: RootState) => store.authentication.token);
-
+function useRouter(token: any){
 	let routes = (
 		<Switch>
 			<Route exact path='/login' component={AuthenticationPage} />
 			<Route exact path='/register' component={RegisterPage} />
-			<Redirect to="/login" />
 		</Switch>
 	);
 
-	if (token !== null) {
+	if (token !== null){
 		routes = (
 			<Switch>
 				<Route path='/profile' component={ProfilePage} />
 				<Route path='/map' component={MapPage} />
-				<Redirect to="/profile" />
 			</Switch>
 		);
 	}
 
+	return routes
+}
+
+function App() {
+	const dispatch = useDispatch();
+	let token = useSelector((store: RootState) => store.authentication.token);
+
+	useEffect(() => {
+		let token = localStorage.getItem("token");
+		
+		if (token) {
+			dispatch(authenticationSuccess(token))
+		}
+	}, [])
+
 	return (
 		<>
 			<Navbar />
-			<MapPage />
-			{routes}
+			{useRouter(token)}
 		</>
 	);
 }

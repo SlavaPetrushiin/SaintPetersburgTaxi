@@ -1,57 +1,44 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import classes from './MapPage.module.css'
 //@ts-ignore
 import mapboxgl from 'mapbox-gl';
 
+type StateType = {
+	lng: number
+	lat: number
+	zoom: number
+}
+
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2xhdmE5MXBldHJ1c2hpbiIsImEiOiJja2Y0YzZxb3cwNmg3MnJsY2M3cTBzYWtxIn0.NOIbmlQuifTg1sitvjGQ7w';
 
-class MapPage extends React.Component {
-	constructor(props: any) {
-		super(props);
-		this.state = {
-		lng: 5,
-		lat: 34,
-		zoom: 2
-		};
-		}
-	
+class MapPage extends React.Component<{}, StateType> {
+	state = {
+		lng: 30.2656504,
+		lat: 59.8029126,
+		zoom: 10
+	};
+
+	map = null as any;
+  mapContainer = React.createRef() as any;
 
 	componentDidMount() {
 		const map = new mapboxgl.Map({
-			container: this.mapContainer,
-			style: 'mapbox://styles/mapbox/streets-v11',
-			center: [5, 34],
-			zoom: 2
-			});
+		container: this.mapContainer,
+		style: 'mapbox://styles/mapbox/streets-v11',
+		center: [this.state.lng, this.state.lat],
+		zoom: this.state.zoom
+		});
 		}
 
-  componentWillUnmount() {
-    this.map.remove();
-  }
+	componentWillUnmount() {
+		this.map.remove();
+	}
 
-  render() {
-    return <div ref={this.mapContainer} />;
-  }	
+	render() {
+		return (
+			<div ref={el => this.mapContainer = el} className={classes.mapContainer} />
+		)
+	}
 }
 
-
-/*
-= () => {
-	let map = null;
-	let mapContainer = React.createRef();
-	
-	useEffect(() => {
-		mapboxgl.accessToken = "pk.eyJ1Ijoic2xhdmE5MXBldHJ1c2hpbiIsImEiOiJja2Y0YzZxb3cwNmg3MnJsY2M3cTBzYWtxIn0.NOIbmlQuifTg1sitvjGQ7w";
-    this.map = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v9",
-      center: [30.2656504, 59.8029126],
-      zoom: 15
-    });
-	}, [])
-
-	return (
-		<p style={{color: "white", backgroundColor: "grey",  marginBottom: 10}}> MApPage</p>
-	)
-};
-*/
-export default MapPage ;
+export default MapPage;
