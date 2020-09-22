@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import { NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles({
 	root: {
@@ -11,6 +12,16 @@ const useStyles = makeStyles({
 	},
 	pos: {
 		marginBottom: 12,
+	},
+	link: {
+		backgroundColor: '#FFD700',
+		borderRadius: 10,
+		padding: 10,
+		textDecoration: 'none',
+		color: '#000000',
+		fontWeight: 500,
+		lineHeight: 1.75,
+    textTransform: 'uppercase'
 	}
 });
 
@@ -31,7 +42,7 @@ const ModalSaveCard = () => {
         </Typography>
 			</CardContent>
 			<CardActions>
-				<Button size="small">Перейти на карту</Button>
+				<NavLink to='/map' className={classes.link}>Перейти на карту</NavLink>
 			</CardActions>
 		</Card>
 	)
