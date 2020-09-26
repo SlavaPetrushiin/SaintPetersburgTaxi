@@ -5,6 +5,7 @@ import fetchAddressList from '../../api/addressList';
 
 type StateType = typeof initialState;
 type IThunk = ThunkAction<void, RootState, unknown, any>
+type AllTypes = GetAddressesSuccess
 
 type GetAddressesSuccess = {
 	type: typeof GET_ADDRESSES_SUCCESS, 
@@ -15,8 +16,14 @@ const initialState = {
 	addresses: [] as string[]
 }
 
-const addressesList = (state: StateType = initialState, action: any) => {
+const addressesList = (state: StateType = initialState, action: AllTypes): StateType => {
 	switch(action.type){
+		case GET_ADDRESSES_SUCCESS: {
+			return {
+				...state,
+				addresses: [...action.addresses]
+			}
+		}
 		default:{
 			return state;
 		} 
