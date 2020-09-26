@@ -1,44 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from './MapPage.module.css'
 //@ts-ignore
 import mapboxgl from 'mapbox-gl';
-
-type StateType = {
-	lng: number
-	lat: number
-	zoom: number
-}
+import fetchAddressList from '../../api/addressList';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2xhdmE5MXBldHJ1c2hpbiIsImEiOiJja2Y0YzZxb3cwNmg3MnJsY2M3cTBzYWtxIn0.NOIbmlQuifTg1sitvjGQ7w';
 
-class MapPage extends React.Component<{}, StateType> {
-	state = {
-		lng: 30.2656504,
-		lat: 59.8029126,
-		zoom: 10
-	};
+const MapPage = () => {
+	const [lng, setLng] = useState<number>(30.2656504);
+	const [lat, setLat] = useState<number>(59.8029126);
+	const [zoom, setZoom] = useState<number>(10);
 
-	map = null as any;
-  mapContainer = React.createRef() as any;
+  let mapContainer = React.createRef() as any;
 
-	componentDidMount() {
+	useEffect(() => {
 		const map = new mapboxgl.Map({
-		container: this.mapContainer,
-		style: 'mapbox://styles/mapbox/streets-v11',
-		center: [this.state.lng, this.state.lat],
-		zoom: this.state.zoom
-		});
-		}
+			container: mapContainer,
+			style: 'mapbox://styles/mapbox/streets-v11',
+			center: [lng, lat],
+			zoom: zoom
+			});
 
-	componentWillUnmount() {
-		this.map.remove();
-	}
+			return function mapRemove(){
+				map.remove()
+			} 
+	}, [])
 
-	render() {
-		return (
-			<div ref={el => this.mapContainer = el} className={classes.mapContainer} />
-		)
-	}
+	useEffect(() => {
+		(async function(){
+			let address = await fetchAddressList.getAddressList()
+		})()
+	}, [])
+
+	return (
+		<div ref={el => mapContainer = el} className={classes.mapContainer} />
+	)
 }
+
 
 export default MapPage;

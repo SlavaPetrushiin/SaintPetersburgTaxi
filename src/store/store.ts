@@ -1,11 +1,13 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunk, {ThunkMiddleware} from "redux-thunk";
+import addressesList from "./addresses/addresses";
 import authenticationReducer from "./signIn/authenticationReducer";
 import userCard from "./userCard/userCard";
 
 const rootReducer = combineReducers({
 	authentication: authenticationReducer,
-	userCard: userCard
+	userCard: userCard,
+	addresses: addressesList
 })
 
 export type RootState = ReturnType<typeof rootReducer>;
