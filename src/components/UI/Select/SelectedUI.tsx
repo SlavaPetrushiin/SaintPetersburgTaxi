@@ -3,6 +3,11 @@ import React from 'react';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
+type PropsType = {
+	onChangeField: (street: string) => void
+	addresses: string[]
+}
+
 const useStyles = makeStyles(() =>
 	createStyles({
 		formControl: {
@@ -19,12 +24,18 @@ const useStyles = makeStyles(() =>
 	}),
 );
 
-const SelectedUI = ({ addresses }: any) => {
+const SelectedUI = ({ addresses, onChangeField }: PropsType) => {
 	const classes = useStyles();
 
 	const renderMenuItem = addresses.map((address: string) => {
 		return <MenuItem value={address}>{address}</MenuItem>
 	})
+
+	const onHandleChange = (e: any) => {
+		let street = e.currentTarget.textContent;
+		onChangeField(street);
+	}
+	debugger
 
 	return (
 			<FormControl className={classes.formControl}>
@@ -33,6 +44,7 @@ const SelectedUI = ({ addresses }: any) => {
 					className={classes.selected}
 					labelId="demo-simple-select-label"
 					id="demo-simple-select"
+					onChange={onHandleChange}
 				>
 					{renderMenuItem}
 				</Select>

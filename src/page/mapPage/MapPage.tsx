@@ -43,10 +43,13 @@ const useStyles = makeStyles(() => ({
 const MapPage = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
+	const addresses = useSelector((state: RootState) => state.addresses.addresses);
 	const [lng, setLng] = useState<number>(30.2656504);
 	const [lat, setLat] = useState<number>(59.8029126);
 	const [zoom, setZoom] = useState<number>(10);
-	const addresses = useSelector((state: RootState) => state.addresses.addresses);
+	const [fieldWhereForm, setFieldWhereForm] = useState<string[]>(addresses);
+	const [fieldWhere, setFieldWhere] = useState<string[]>([...addresses]);
+
 
 	let mapContainer = React.createRef() as any;
 
@@ -67,11 +70,25 @@ const MapPage = () => {
 		dispatch(getAddressesList());
 	}, [])
 
+	useEffect(() => {
+		setFieldWhereForm(addresses);
+		setFieldWhere(addresses);
+	}, [addresses]);
+
+	let onChangeFieldWhereForm = (street: string) => {
+		let newAddresses = [...addresses].filter((address: string) => address !== street);
+		setFieldWhereForm(newAddresses);
+	};
+
+	let onChangeFieldWhere = (street: string) => {
+		
+	};
+
 	return (
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
 			<Card className={classes.root}>
-				<SelectedUI addresses={addresses} />
-				<SelectedUI addresses={addresses} />
+				<SelectedUI addresses={fieldWhereForm} onChangeField={onChangeFieldWhereForm}/>
+				<SelectedUI addresses={fieldWhere} onChangeField={onChangeFieldWhere}/>
 				<Button
 					variant="contained"
 					color="primary"
