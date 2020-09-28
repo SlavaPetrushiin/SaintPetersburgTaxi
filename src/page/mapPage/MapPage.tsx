@@ -47,8 +47,9 @@ const MapPage = () => {
 	const [lng, setLng] = useState<number>(30.2656504);
 	const [lat, setLat] = useState<number>(59.8029126);
 	const [zoom, setZoom] = useState<number>(10);
-	const [fieldWhereForm, setFieldWhereForm] = useState<string[]>(addresses);
-	const [fieldWhere, setFieldWhere] = useState<string[]>([...addresses]);
+	const [from, setForm] = useState<string>('');
+	const [where, setWhere] = useState<string>('');
+	const [streets, setStreets] = useState<string[]>(addresses);
 
 
 	let mapContainer = React.createRef() as any;
@@ -71,29 +72,45 @@ const MapPage = () => {
 	}, [])
 
 	useEffect(() => {
-		setFieldWhereForm(addresses);
-		setFieldWhere(addresses);
+		setStreets(addresses);
 	}, [addresses]);
 
 	let onChangeFieldWhereForm = (street: string) => {
-		let newAddresses = [...addresses].filter((address: string) => address !== street);
-		setFieldWhereForm(newAddresses);
+		let newAddresses = [] as any;
+		if(!from){
+			newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
+			setStreets(newAddresses);
+		} else {
+			newAddresses = [...addresses].filter((address: string) => address !== street && address !== from && address !== where);
+			setStreets(newAddresses);
+		}
+		
+		setForm(street);
 	};
 
 	let onChangeFieldWhere = (street: string) => {
-		
+		let newAddresses = [] as any;
+		if(!!from){
+			newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
+			setStreets(newAddresses);
+		} else {
+			newAddresses = [...addresses].filter((address: string) => address !== street && address !== from && address !== where);
+			setStreets(newAddresses);
+		}
+
+		setWhere(street);
 	};
 
 	return (
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
 			<Card className={classes.root}>
-				<SelectedUI addresses={fieldWhereForm} onChangeField={onChangeFieldWhereForm}/>
-				<SelectedUI addresses={fieldWhere} onChangeField={onChangeFieldWhere}/>
+				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={from}/>
+				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhere} street={where}/>
 				<Button
 					variant="contained"
 					color="primary"
 				>
-					Send
+					Заказать
 				</Button>
 			</Card>
 		</div>

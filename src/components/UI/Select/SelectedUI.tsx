@@ -6,6 +6,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 type PropsType = {
 	onChangeField: (street: string) => void
 	addresses: string[]
+	street: string
 }
 
 const useStyles = makeStyles(() =>
@@ -20,22 +21,24 @@ const useStyles = makeStyles(() =>
 		},
 		selected: {
 			width: '100%',
+		},
+		dNone: {
+			display: 'none'
 		}
 	}),
 );
 
-const SelectedUI = ({ addresses, onChangeField }: PropsType) => {
+const SelectedUI = ({ addresses, street, onChangeField}: PropsType) => {
 	const classes = useStyles();
 
-	const renderMenuItem = addresses.map((address: string) => {
-		return <MenuItem value={address}>{address}</MenuItem>
+	const renderMenuItem = addresses.map((address: string, i) => {
+		return <MenuItem value={address} key={i}>{address}</MenuItem>
 	})
 
 	const onHandleChange = (e: any) => {
 		let street = e.currentTarget.textContent;
 		onChangeField(street);
 	}
-	debugger
 
 	return (
 			<FormControl className={classes.formControl}>
@@ -44,9 +47,11 @@ const SelectedUI = ({ addresses, onChangeField }: PropsType) => {
 					className={classes.selected}
 					labelId="demo-simple-select-label"
 					id="demo-simple-select"
+					value={street}
 					onChange={onHandleChange}
 				>
 					{renderMenuItem}
+					<MenuItem value={street} className={classes.dNone}>{street}</MenuItem>
 				</Select>
 			</FormControl>
 	)
