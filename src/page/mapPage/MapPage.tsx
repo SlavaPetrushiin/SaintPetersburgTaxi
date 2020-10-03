@@ -6,6 +6,7 @@ import { Button, Card, makeStyles } from '@material-ui/core';
 import SelectedUI from '../../components/UI/Select/SelectedUI';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import validSelected from '../../utilites/validSelected';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2xhdmE5MXBldHJ1c2hpbiIsImEiOiJja2Y0YzZxb3cwNmg3MnJsY2M3cTBzYWtxIn0.NOIbmlQuifTg1sitvjGQ7w';
 
@@ -76,84 +77,22 @@ const MapPage = () => {
 	}, [addresses]);
 
 	let onChangeFieldWhereForm = (street: string, name: string) => {
-		let newAddresses = [] as any;
-
-		if(!from && name === 'from'){
-			if(!!where){
-				newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
-				setForm(street);
-				setStreets(newAddresses);
-				return;				
-			} else {
-				newAddresses = [...addresses].filter((address: string) => address !== street);
-				setForm(street);
-				setStreets(newAddresses);
-				return;
-			}
+		if (name === 'from') {
+			validSelected(addresses, street, 'from', where, setForm, setStreets);
+			return;
 		}
 
-		if(!where && name === 'where'){
-			if(!!from) {
-				newAddresses = [...addresses].filter((address: string) => address !== street && address !== from);
-				setWhere(street);
-				setStreets(newAddresses);
-				return;
-			} else {
-				newAddresses = [...addresses].filter((address: string) => address !== street);
-				setWhere(street);
-				setStreets(newAddresses);
-				return;						
-			}
+		if (name === 'where') {
+			validSelected(addresses, street, 'where', from, setWhere, setStreets);
+			return;
 		}
-
-		if(name === 'from' && !!from){
-			if(!!where) {
-				newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
-				setForm(street);
-				setStreets(newAddresses);
-				return;
-			} else {
-				newAddresses = [...addresses].filter((address: string) => address !== street && address !== from);
-				setForm(street);
-				setStreets(newAddresses);
-				return;				
-			}
-		}
-
-		if(name === 'where' && !!where){
-			if(!!from) {
-				newAddresses = [...addresses].filter((address: string) => address !== street && address !== from);
-				setWhere(street);
-				setStreets(newAddresses);
-				return;
-			} else {
-				newAddresses = [...addresses].filter((address: string) => address !== street);
-				setWhere(street);
-				setStreets(newAddresses);
-				return;						
-			}
-		}
-	};
-
-	let onChangeFieldWhere = (street: string) => {/*
-		let newAddresses = [] as any;
-
-		if(!!from){
-			newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
-			setStreets(newAddresses);
-		} else {
-			newAddresses = [...addresses].filter((address: string) => address !== street && address !== from && address !== where);
-			setStreets(newAddresses);
-		}
-
-		setWhere(street);*/
 	};
 
 	return (
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
 			<Card className={classes.root}>
-				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={from} name={'from'}/>
-				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={where} name={'where'}/>
+				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={from} name={'from'} />
+				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={where} name={'where'} />
 				<Button
 					variant="contained"
 					color="primary"
