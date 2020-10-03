@@ -52,7 +52,6 @@ const MapPage = () => {
 	const [where, setWhere] = useState<string>('');
 	const [streets, setStreets] = useState<string[]>(addresses);
 
-
 	let mapContainer = React.createRef() as any;
 
 	useEffect(() => {
@@ -76,23 +75,24 @@ const MapPage = () => {
 		setStreets(addresses);
 	}, [addresses]);
 
-	let onChangeFieldWhereForm = (street: string, name: string) => {
-		if (name === 'from') {
-			validSelected(addresses, street, 'from', where, setForm, setStreets);
-			return;
-		}
-
-		if (name === 'where') {
-			validSelected(addresses, street, 'where', from, setWhere, setStreets);
-			return;
+	let onChangeStreet = (street: string, name: string) => {
+		switch(name){
+			case 'from': {
+				validSelected(addresses, street, 'from', where, setForm, setStreets);
+				return
+			}
+			case 'where': {
+				validSelected(addresses, street, 'where', from, setWhere, setStreets);
+				return;
+			}
 		}
 	};
 
 	return (
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
 			<Card className={classes.root}>
-				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={from} name={'from'} />
-				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={where} name={'where'} />
+				<SelectedUI addresses={streets} onChangeField={onChangeStreet} street={from} name={'from'} />
+				<SelectedUI addresses={streets} onChangeField={onChangeStreet} street={where} name={'where'} />
 				<Button
 					variant="contained"
 					color="primary"
