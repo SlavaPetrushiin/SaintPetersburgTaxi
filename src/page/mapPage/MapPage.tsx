@@ -75,21 +75,69 @@ const MapPage = () => {
 		setStreets(addresses);
 	}, [addresses]);
 
-	let onChangeFieldWhereForm = (street: string) => {
+	let onChangeFieldWhereForm = (street: string, name: string) => {
 		let newAddresses = [] as any;
-		if(!from){
-			newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
-			setStreets(newAddresses);
-		} else {
-			newAddresses = [...addresses].filter((address: string) => address !== street && address !== from && address !== where);
-			setStreets(newAddresses);
+
+		if(!from && name === 'from'){
+			if(!!where){
+				newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
+				setForm(street);
+				setStreets(newAddresses);
+				return;				
+			} else {
+				newAddresses = [...addresses].filter((address: string) => address !== street);
+				setForm(street);
+				setStreets(newAddresses);
+				return;
+			}
 		}
-		
-		setForm(street);
+
+		if(!where && name === 'where'){
+			if(!!from) {
+				newAddresses = [...addresses].filter((address: string) => address !== street && address !== from);
+				setWhere(street);
+				setStreets(newAddresses);
+				return;
+			} else {
+				newAddresses = [...addresses].filter((address: string) => address !== street);
+				setWhere(street);
+				setStreets(newAddresses);
+				return;						
+			}
+		}
+
+		if(name === 'from' && !!from){
+			if(!!where) {
+				newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
+				setForm(street);
+				setStreets(newAddresses);
+				return;
+			} else {
+				newAddresses = [...addresses].filter((address: string) => address !== street && address !== from);
+				setForm(street);
+				setStreets(newAddresses);
+				return;				
+			}
+		}
+
+		if(name === 'where' && !!where){
+			if(!!from) {
+				newAddresses = [...addresses].filter((address: string) => address !== street && address !== from);
+				setWhere(street);
+				setStreets(newAddresses);
+				return;
+			} else {
+				newAddresses = [...addresses].filter((address: string) => address !== street);
+				setWhere(street);
+				setStreets(newAddresses);
+				return;						
+			}
+		}
 	};
 
-	let onChangeFieldWhere = (street: string) => {
+	let onChangeFieldWhere = (street: string) => {/*
 		let newAddresses = [] as any;
+
 		if(!!from){
 			newAddresses = [...addresses].filter((address: string) => address !== street && address !== where);
 			setStreets(newAddresses);
@@ -98,14 +146,14 @@ const MapPage = () => {
 			setStreets(newAddresses);
 		}
 
-		setWhere(street);
+		setWhere(street);*/
 	};
 
 	return (
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
 			<Card className={classes.root}>
-				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={from}/>
-				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhere} street={where}/>
+				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={from} name={'from'}/>
+				<SelectedUI addresses={streets} onChangeField={onChangeFieldWhereForm} street={where} name={'where'}/>
 				<Button
 					variant="contained"
 					color="primary"

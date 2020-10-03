@@ -4,9 +4,10 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 type PropsType = {
-	onChangeField: (street: string) => void
+	onChangeField: (street: string, name: string) => void
 	addresses: string[]
 	street: string
+	name: string
 }
 
 const useStyles = makeStyles(() =>
@@ -28,7 +29,7 @@ const useStyles = makeStyles(() =>
 	}),
 );
 
-const SelectedUI = ({ addresses, street, onChangeField}: PropsType) => {
+const SelectedUI = ({ addresses, street, name, onChangeField}: PropsType) => {
 	const classes = useStyles();
 
 	const renderMenuItem = addresses.map((address: string, i) => {
@@ -37,7 +38,7 @@ const SelectedUI = ({ addresses, street, onChangeField}: PropsType) => {
 
 	const onHandleChange = (e: any) => {
 		let street = e.currentTarget.textContent;
-		onChangeField(street);
+		onChangeField(street, name);
 	}
 
 	return (
