@@ -7,6 +7,8 @@ import SelectedUI from '../../components/UI/Select/SelectedUI';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import validSelected from '../../utilites/validSelected';
+import fetchAddressList, { ResCoordinateRouteType } from '../../api/addressList';
+import { TrendingUpOutlined } from '@material-ui/icons';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2xhdmE5MXBldHJ1c2hpbiIsImEiOiJja2Y0YzZxb3cwNmg3MnJsY2M3cTBzYWtxIn0.NOIbmlQuifTg1sitvjGQ7w';
 
@@ -51,39 +53,18 @@ const MapPage = () => {
 	const [from, setForm] = useState<string>('');
 	const [where, setWhere] = useState<string>('');
 	const [streets, setStreets] = useState<string[]>(addresses);
+	const [map, setMap] = useState<any>(null);
+	const [route, setRoute] = useState<any>([]);
 
 	let mapContainer = React.createRef() as any;
 
 	useEffect(() => {
-		const map = new mapboxgl.Map({
+		setMap(new mapboxgl.Map({
 			container: mapContainer,
 			style: 'mapbox://styles/mapbox/streets-v11',
 			center: [lng, lat],
 			zoom: zoom
-		});
-
-		map.flyTo({
-			center: [
-				-74.5 + (Math.random() - 0.5) * 10,
-				40 + (Math.random() - 0.5) * 10
-				],
-				essential: true // this animation is considered essential with respect to prefers-reduced-motion			
-		})
-
-		map.addLayer({
-			id: 'route',
-			type: 'line',
-			paint: {
-				'fill-color': '#00ffff',
-				'line-width': 8,
-			},
-			source: {
-				type: 'geojson',
-				data: {
-					type: 'Feature',
-				}
-			}
-		})
+		}));
 
 		return function mapRemove() {
 			map.remove()
@@ -98,8 +79,43 @@ const MapPage = () => {
 		setStreets(addresses);
 	}, [addresses]);
 
+	useEffect(() => {
+		drawRoute();
+	}, [route])
+
+	const drawRoute = () => {
+		if (!map) return;
+		map.flyTo({
+			center: route[0],
+			zoom: 15,
+		})
+
+		map.addLayer({
+			id: 'route',
+			type: 'line',
+			paint: {
+				'line-width': 4,
+				'line-color': '#FFD700'
+			},
+			layout: {
+				"line-join": "round",
+				"line-cap": "round",
+			},
+			source: {
+				type: 'geojson',
+				data: {
+					type: 'Feature',
+					geometry: {
+						type: "LineString",
+						coordinates: route,
+					},
+				}
+			}
+		})
+	}
+
 	const onChangeStreet = (street: string, name: string): void => {
-		switch(name){
+		switch (name) {
 			case 'from': {
 				validSelected(addresses, street, 'from', where, setForm, setStreets);
 				return
@@ -111,9 +127,12 @@ const MapPage = () => {
 		}
 	};
 
-	const handleClickOrder = (): void => {
-
+	const handleClickOrder = async () => {
+		const route = await fetchAddressList.getСoordinateRoute(from, where);
+		setRoute(route);
 	}
+
+	console.log(where)
 
 	return (
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
@@ -124,6 +143,7 @@ const MapPage = () => {
 					variant="contained"
 					color="primary"
 					onClick={handleClickOrder}
+					disabled={from.length && where.length ? false : true}
 				>
 					Заказать
 				</Button>
