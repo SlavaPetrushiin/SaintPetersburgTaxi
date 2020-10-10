@@ -62,6 +62,29 @@ const MapPage = () => {
 			zoom: zoom
 		});
 
+		map.flyTo({
+			center: [
+				-74.5 + (Math.random() - 0.5) * 10,
+				40 + (Math.random() - 0.5) * 10
+				],
+				essential: true // this animation is considered essential with respect to prefers-reduced-motion			
+		})
+
+		map.addLayer({
+			id: 'route',
+			type: 'line',
+			paint: {
+				'fill-color': '#00ffff',
+				'line-width': 8,
+			},
+			source: {
+				type: 'geojson',
+				data: {
+					type: 'Feature',
+				}
+			}
+		})
+
 		return function mapRemove() {
 			map.remove()
 		}
@@ -75,7 +98,7 @@ const MapPage = () => {
 		setStreets(addresses);
 	}, [addresses]);
 
-	let onChangeStreet = (street: string, name: string) => {
+	const onChangeStreet = (street: string, name: string): void => {
 		switch(name){
 			case 'from': {
 				validSelected(addresses, street, 'from', where, setForm, setStreets);
@@ -88,6 +111,10 @@ const MapPage = () => {
 		}
 	};
 
+	const handleClickOrder = (): void => {
+
+	}
+
 	return (
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
 			<Card className={classes.root}>
@@ -96,6 +123,7 @@ const MapPage = () => {
 				<Button
 					variant="contained"
 					color="primary"
+					onClick={handleClickOrder}
 				>
 					Заказать
 				</Button>
