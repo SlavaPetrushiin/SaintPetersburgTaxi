@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import BackgroundPage from '../../components/BackgroundPage/BackgroundPage';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -9,37 +9,9 @@ import { useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import FormControlField from '../../components/FormControlField';
-import { v4 as uuidv4 } from 'uuid';
 import { fetchLogin } from '../../store/signIn/authenticationReducer';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
-
-type IInput = {
-	type: string
-	title: string
-	name: string
-	id: string
-	value: string
-	required: boolean
-}
-
-const inputs: Array<IInput>  = [
-	{
-		type: "email",
-		name: "email",
-		title: "Email",
-		id: uuidv4(),
-		value: "",
-		required: true
-	},
-	{
-		type: "password",
-		name: "password",
-		title: "Password",
-		id: uuidv4(),
-		value: "",
-		required: true
-	},	
-]
+import generationField, { FieldType } from '../../utilites/generationField';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -60,44 +32,43 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AuthenticationPage = () => {
 	const classes = useStyles();
-	const [fields, setFields] = useState<IInput[]>(inputs)
 	const dispatch = useDispatch();
-	const [disabled, setDisabled] = useState(false);
-	const error = useSelector((store: RootState) => store.authentication.error ); 
+	const error = useSelector((store: RootState) => store.authentication.error);
+	const [email, setEmail] = useState<FieldType>(generationField("email", "email", "Email", true));
+	const [password, setPassword] = useState<FieldType>(generationField("password", "password", "Password", true));
 
-	const login = async () => {
-		setDisabled(true);
-		await dispatch(fetchLogin(fields[0].value, fields[1].value));  ///Поправить
-		setDisabled(false);
-	};
+	const emailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+		const newEmail = {...email};
+		newEmail.value = e.currentTarget.value.trim();
+		setEmail(newEmail);
+	}, [email]);
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
-		let newFields = fields.map((field: IInput) => {
-			if(field.id === id){
-				field.value = e.currentTarget.value;
-			}
-			return field;
-		})
-		setFields(newFields)
-	};
+	const passwordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+		const newPassword = {...password};
+		newPassword.value = e.currentTarget.value.trim();
+		setPassword(newPassword);
+	}, [password]);
+
+	const authentication = useCallback(() => {
+		dispatch(fetchLogin(email.value, password.value))
+	}, [email, password, dispatch]);
 
 	return (
 		<BackgroundPage>
 			<Card>
 				<CardContent>
 					<Typography variant="h6" gutterBottom>
-        		Войти
-      		</Typography>
-					{
-						fields.map((inp: IInput) => <FormControlField {...inp} onChange={handleChange} />)
-					}
+						Войти
+					</Typography>
+					<FormControlField {...email} onChange={emailChange} />
+					<FormControlField {...password} onChange={passwordChange} />
 					{
 						error !== null && <p className={classes.error}>{error}</p>
 					}
-					<Button 
+					<Button
 						variant="contained"
-						onClick={login}
-						disabled={disabled}
+						disabled={(email.value.length && password.value.length)}
+						onClick={authentication}
 					>
 						Войти
 					</Button>
