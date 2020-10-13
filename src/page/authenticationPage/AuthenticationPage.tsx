@@ -67,7 +67,7 @@ const AuthenticationPage = () => {
 					}
 					<Button
 						variant="contained"
-						disabled={(email.value.length && password.value.length)}
+						disabled={(email.value.length && password.value.length)? false : true}
 						onClick={authentication}
 					>
 						Войти

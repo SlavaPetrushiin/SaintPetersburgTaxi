@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 //@ts-ignore
 import mapboxgl from 'mapbox-gl';
 import { getAddressesList } from '../../store/addresses/addresses';
-import { Button, Card, makeStyles } from '@material-ui/core';
+import { Button, Card, makeStyles, Typography } from '@material-ui/core';
 import SelectedUI from '../../components/UI/Select/SelectedUI';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import validSelected from '../../utilites/validSelected';
-import fetchAddressList, { ResCoordinateRouteType } from '../../api/addressList';
-import { TrendingUpOutlined } from '@material-ui/icons';
+import fetchAddressList, { СoordinateType } from '../../api/addressList';
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2xhdmE5MXBldHJ1c2hpbiIsImEiOiJja2Y0YzZxb3cwNmg3MnJsY2M3cTBzYWtxIn0.NOIbmlQuifTg1sitvjGQ7w';
 
@@ -54,7 +53,8 @@ const MapPage = () => {
 	const [where, setWhere] = useState<string>('');
 	const [streets, setStreets] = useState<string[]>(addresses);
 	const [map, setMap] = useState<any>(null);
-	const [route, setRoute] = useState<any>([]);
+	const [route, setRoute] = useState<СoordinateType[]>([]);
+	const [hideInfo, setHideInfo] = useState(true);
 
 	let mapContainer = React.createRef() as any;
 
@@ -83,8 +83,15 @@ const MapPage = () => {
 		drawRoute();
 	}, [route])
 
-	const drawRoute = () => {
+	const drawRoute = (): void => {
 		if (!map) return;
+
+		if(!route.length){
+			map.removeLayer("route");
+			map.removeSource("route");
+			return;
+		}
+
 		map.flyTo({
 			center: route[0],
 			zoom: 15,
@@ -94,7 +101,7 @@ const MapPage = () => {
 			id: 'route',
 			type: 'line',
 			paint: {
-				'line-width': 4,
+				'line-width': 6,
 				'line-color': '#FFD700'
 			},
 			layout: {
@@ -129,25 +136,57 @@ const MapPage = () => {
 
 	const handleClickOrder = async () => {
 		const route = await fetchAddressList.getСoordinateRoute(from, where);
+		debugger
 		setRoute(route);
+		setHideInfo(false);
+		setWhere('');
+		setForm('');
 	}
 
-	console.log(where)
+	const handleClickNewOrder = (): void => {
+		setHideInfo(true);
+		setRoute([]);
+		setStreets(addresses);
+	}
 
 	return (
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
-			<Card className={classes.root}>
-				<SelectedUI addresses={streets} onChangeField={onChangeStreet} street={from} name={'from'} />
-				<SelectedUI addresses={streets} onChangeField={onChangeStreet} street={where} name={'where'} />
-				<Button
-					variant="contained"
-					color="primary"
-					onClick={handleClickOrder}
-					disabled={from.length && where.length ? false : true}
-				>
-					Заказать
-				</Button>
-			</Card>
+			{
+				hideInfo
+					? (
+						<Card className={classes.root}>
+							<SelectedUI addresses={streets} onChangeField={onChangeStreet} street={from} name={'from'} />
+							<SelectedUI addresses={streets} onChangeField={onChangeStreet} street={where} name={'where'} />
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={handleClickOrder}
+								disabled={from.length && where.length ? false : true}
+							>
+								Заказать
+						</Button>
+						</Card>
+					)
+					: (
+						<Card className={classes.root}>
+							<Typography variant="h6" gutterBottom>
+								Заказ размещён
+						</Typography>
+							<Typography variant="subtitle1" gutterBottom>
+								Ваше такси уже едет к вам. Прибудет приблизительно через 10 минут
+						</Typography>
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={handleClickNewOrder}
+							>
+								Сделать новый заказ
+						</Button>
+						</Card>
+					)
+			}
+
+
 		</div>
 	)
 }

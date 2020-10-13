@@ -9,7 +9,8 @@ type IPropsType = {
 	token: string | null 
 }
 
-const Routes: React.FC<IPropsType> = (token) => {
+const Routes: React.FC<IPropsType> = ({token}) => {
+
 	if (!!token) {
 		return (
 			<Switch>
@@ -22,9 +23,9 @@ const Routes: React.FC<IPropsType> = (token) => {
 
 	return (
 		<Switch>
-			<Route exact path='/login' component={AuthenticationPage} />
+			<Route  path='/' component={AuthenticationPage} />
 			<Route exact path='/register' component={RegisterPage} />
-			<Redirect to='/login' />
+			<Redirect to='/' />
 		</Switch>
 	)
 }
