@@ -9,50 +9,7 @@ import { fetchRegister } from '../../store/signIn/authenticationReducer';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import withAuthRedirect from '../../hoc/withAuthRedirect';
-
-type IInput = {
-	type: string
-	title: string
-	name: string
-	id: string
-	value: string
-	required: boolean
-}
-
-const inputs: Array<IInput>  = [
-	{
-		type: "email",
-		name: "email",
-		title: "Email",
-		id: uuidv4(),
-		value: "",
-		required: true
-	},
-	{
-		type: "text",
-		name: "userName",
-		title: "Name",
-		id: uuidv4(),
-		value: "",
-		required: true
-	},
-	{
-		type: "text",
-		name: "surname",
-		title: "Surname",
-		id: uuidv4(),
-		value: "",
-		required: true
-	},
-	{
-		type: "password",
-		name: "password",
-		title: "Password",
-		id: uuidv4(),
-		value: "",
-		required: true
-	},		
-]
+import generationField, { FieldType } from '../../utilites/generationField';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -74,21 +31,27 @@ const useStyles = makeStyles((theme: Theme) =>
 const RegisterPage = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const [fields, setFields] = useState<IInput[]>(inputs);
+	const [fields, setFields] = useState<FieldType[]>([
+		generationField("email", "email", "Email", true),
+		generationField("password", "password", "Password", true),
+		generationField("text", "userName", "Name", true),
+		generationField("text", "surname", "Surname", true),
+	]);
 	const [disabled, setDisabled] = useState(false);
 	const error = useSelector((store: RootState) => store.authentication.error); 
 	
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
-		let newFields = fields.map((field: IInput) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: string): void => {
+		let newFields = fields.map((field: FieldType) => {
 			if(field.id === id){
 				field.value = e.currentTarget.value;
 			}
 			return field;
 		})
-		setFields(newFields)
+		setFields(newFields);
 	};
 
-	const register = async () => {
+	const register = async (): Promise<void> => {
+		const values = fields.map((field) => field.value);
 		setDisabled(true);
 		await dispatch(fetchRegister("free@samuraijs.com", "Slava", "Piter", "123456789"))
 		setDisabled(false);
@@ -99,10 +62,10 @@ const RegisterPage = () => {
 			<Card>
 				<CardContent>
 					<Typography variant="h6" gutterBottom>
-					Регистрация
-      		</Typography>
+						Регистрация
+					</Typography>
 					{
-						fields.map((inp: IInput) => <FormControlField {...inp} onChange={handleChange} />)
+						fields.map((field: FieldType) => <FormControlField {...field} onChange={handleChange} />)
 					}
 					{
 						error !== null && <p className={classes.error}>{error}</p>

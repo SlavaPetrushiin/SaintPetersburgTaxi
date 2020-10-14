@@ -37,19 +37,19 @@ const AuthenticationPage = () => {
 	const [email, setEmail] = useState<FieldType>(generationField("email", "email", "Email", true));
 	const [password, setPassword] = useState<FieldType>(generationField("password", "password", "Password", true));
 
-	const emailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+	const emailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, id: string): void => {
 		const newEmail = {...email};
 		newEmail.value = e.currentTarget.value.trim();
 		setEmail(newEmail);
 	}, [email]);
 
-	const passwordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+	const passwordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>, id: string): void => {
 		const newPassword = {...password};
 		newPassword.value = e.currentTarget.value.trim();
 		setPassword(newPassword);
 	}, [password]);
 
-	const authentication = useCallback(() => {
+	const authentication = useCallback((): void => {
 		dispatch(fetchLogin(email.value, password.value))
 	}, [email, password, dispatch]);
 
