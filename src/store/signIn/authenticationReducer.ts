@@ -64,8 +64,6 @@ export const fetchLogin = (email: string, password: string): IThunk => async (di
 	}
 }
 
-//username=test@test.com&password=123123
-
 export const fetchRegister = (email: string, password: string, name: string, surname: string): IThunk => async (dispatch) => {
 	try {
 		let response = await signUp.fetchSignUp(email, password, name, surname);

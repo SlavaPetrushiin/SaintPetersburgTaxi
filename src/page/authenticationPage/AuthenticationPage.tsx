@@ -78,4 +78,4 @@ const AuthenticationPage = () => {
 	)
 };
 
-export default withAuthRedirect(AuthenticationPage);
+export default AuthenticationPage;

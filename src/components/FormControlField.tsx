@@ -6,7 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
-type IProps = {
+type PropsType = {
 	type: string
 	title: string
 	name: string
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 	}),
 );
 
-const FormControlField = (props: IProps) => {
+const FormControlField = (props: PropsType): JSX.Element => {
 	const classes = useStyles();
 
 	return (
@@ -40,7 +40,7 @@ const FormControlField = (props: IProps) => {
 				name={props.name}
 				required={props.required}
 				value={props.value}
-				onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.onChange(e, props.id)}
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.onChange(e, props.name)}
 				className={classes.input}
 				startAdornment={
 					<InputAdornment position="start">

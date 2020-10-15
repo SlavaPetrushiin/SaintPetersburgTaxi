@@ -53,7 +53,7 @@ const Navbar = () => {
 					<Typography variant="h6" className={classes.title}>
 						Saint Petersburg Taxi
 					</Typography>
-					<Link className={classes.btn} to={"/login"}>Login In</Link>
+					<Link className={classes.btn} to={"/"}>Login In</Link>
 					<Link className={classes.btn} to={"/register"}>Login Up</Link>
 				</Toolbar>
 			</AppBar>

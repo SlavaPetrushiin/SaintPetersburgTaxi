@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import BackgroundPage from '../../components/BackgroundPage/BackgroundPage';
 import { Card, CardContent, Typography, Button } from '@material-ui/core';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import FormControlField from '../../components/FormControlField';
-import { v4 as uuidv4 } from 'uuid';
 import { useDispatch } from 'react-redux';
 import { fetchRegister } from '../../store/signIn/authenticationReducer';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
-import withAuthRedirect from '../../hoc/withAuthRedirect';
 import generationField, { FieldType } from '../../utilites/generationField';
+
+type StateType = {
+	email: FieldType
+	password: FieldType
+	name: FieldType
+	surname: FieldType
+}
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -31,31 +36,39 @@ const useStyles = makeStyles((theme: Theme) =>
 const RegisterPage = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const [fields, setFields] = useState<FieldType[]>([
-		generationField("email", "email", "Email", true),
-		generationField("password", "password", "Password", true),
-		generationField("text", "userName", "Name", true),
-		generationField("text", "surname", "Surname", true),
-	]);
+	const [fields, setFields] = useState<StateType>({
+		email: generationField("email", "email", "Email", true),
+		password: generationField("password", "password", "Password", true),
+		name: generationField("text", "name", "Name", true),
+		surname: generationField("text", "surname", "Surname", true)
+	});
 	const [disabled, setDisabled] = useState(false);
 	const error = useSelector((store: RootState) => store.authentication.error); 
 	
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>, id: string): void => {
-		let newFields = fields.map((field: FieldType) => {
-			if(field.id === id){
-				field.value = e.currentTarget.value;
-			}
-			return field;
-		})
+	const handleChange = useCallback(	(e: React.ChangeEvent<HTMLInputElement>, name: string): void => {
+		let newFields = {...fields};
+		let field = {...newFields[name as keyof typeof fields]};
+		field.value = e.currentTarget.value;
+		newFields[name as keyof typeof fields] = field;
+
 		setFields(newFields);
-	};
+	}, [fields]);
 
 	const register = async (): Promise<void> => {
-		const values = fields.map((field) => field.value);
 		setDisabled(true);
-		await dispatch(fetchRegister("free@samuraijs.com", "Slava", "Piter", "123456789"))
+		await dispatch(fetchRegister(
+			fields.email.value,
+			fields.name.value,
+			fields.surname.value,
+			fields.password.value
+		))
 		setDisabled(false);
 	}
+
+	const renderFields = useCallback(() => {
+		return (Object.keys(fields) as Array<keyof typeof fields>)
+			.map(input => <FormControlField {...fields[input]} key={fields[input].id}  onChange={handleChange}/>)
+	}, [fields, handleChange]);
 
 	return (
 		<BackgroundPage>
@@ -64,9 +77,7 @@ const RegisterPage = () => {
 					<Typography variant="h6" gutterBottom>
 						Регистрация
 					</Typography>
-					{
-						fields.map((field: FieldType) => <FormControlField {...field} onChange={handleChange} />)
-					}
+					{renderFields()}
 					{
 						error !== null && <p className={classes.error}>{error}</p>
 					}
@@ -83,4 +94,4 @@ const RegisterPage = () => {
 	)
 };
 
-export default withAuthRedirect(RegisterPage);
+export default RegisterPage;
