@@ -141,7 +141,7 @@ const ProfilePage = () => {
 		}
 	});
 
-	const onChange = (value: string, name: keyof FormControlsType) => {
+	const onChange = (value: string, name: keyof FormControlsType): void => {
 		const formControls = { ...state.formControls } as FormControlsType;
 		const control = { ...formControls[name] };
 		const newBankCard = { ...bankCard };
@@ -165,11 +165,11 @@ const ProfilePage = () => {
 		setBankCard(newBankCard);
 	};
 
-	const onFocus = (name: string) => {
+	const onFocus = (name: string): void => {
 		setFocus(name);
 	}
 
-	const renderInput = () => {
+	const renderInput = ()=> {
 		return (Object.keys(state.formControls) as Array<keyof FormControlsType>).map(name => {
 			const input = state.formControls[name];
 			return <Input {...input} onFocus={onFocus} onChange={onChange} key={input.id} />
@@ -192,7 +192,7 @@ const ProfilePage = () => {
 					? <ModalSaveCard  />
 					: <CreditCard
 						bankCard={bankCard}
-						focus={onFocus}
+						onFocus={onFocus}
 						sendDataCard={sendDataCard}
 						renderInput={renderInput}
 					/>

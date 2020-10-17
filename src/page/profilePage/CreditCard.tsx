@@ -8,7 +8,7 @@ import { CreditCardType } from './ProfilePage';
 
 type PropsType = {
 	bankCard: CreditCardType
-	focus: (name: string) => void
+	onFocus: (name: string) => void
 	sendDataCard: () => void
 	renderInput: () => JSX.Element[]
 }
@@ -19,16 +19,16 @@ const useStyles = makeStyles({
 	}
 });
 
-const CreditCard = ({bankCard, focus, sendDataCard, renderInput}: PropsType) => {
+const CreditCard = ({bankCard, onFocus, sendDataCard, renderInput}: PropsType): JSX.Element => {
 	const classes = useStyles();
-
+	
 	return (
 		<>
 			<Card className={classes.cardP}>
 				<Cards
 					cvc={bankCard.cvc}
 					expiry={bankCard.expiry}
-					focused={() => focus(bankCard.name)}
+					focused={() => onFocus(bankCard.name)}
 					name={bankCard.name}
 					number={bankCard.number}
 				/>

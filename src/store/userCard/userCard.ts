@@ -103,6 +103,10 @@ export const fetchGetUserCard = (): IThunk => 	async(dispatch, getState) => {
 		const token = getState().authentication.token;
 		const {id, cardNumber, expiryDate, cardName, cvc} = await fetchBankCard.fetchGetCard(token!);
 
+		if(!id || !cardNumber || !expiryDate || !cardName || !cvc){
+			throw new Error("Данных нет!");
+		}
+
 		dispatch(getCardSuccess(id, cardNumber, expiryDate, cardName, cvc));
 	}
 	catch(e){

@@ -10,7 +10,9 @@ type GetCardResType = {
 	cardNumber: string,
 	expiryDate: string,
 	cardName: string,
-	cvc: string	
+	cvc: string,
+	success: boolean,
+	error: string	
 }
 
 const fetchBankCard = {

@@ -10,7 +10,6 @@ import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import FormControlField from '../../components/FormControlField';
 import { fetchLogin } from '../../store/signIn/authenticationReducer';
-import withAuthRedirect from '../../hoc/withAuthRedirect';
 import generationField, { FieldType } from '../../utilites/generationField';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,7 +49,7 @@ const AuthenticationPage = () => {
 	}, [password]);
 
 	const authentication = useCallback((): void => {
-		dispatch(fetchLogin(email.value, password.value))
+		dispatch(fetchLogin(email.value, password.value));
 	}, [email, password, dispatch]);
 
 	return (

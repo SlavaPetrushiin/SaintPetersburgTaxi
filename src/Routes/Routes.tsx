@@ -5,21 +5,20 @@ import RegisterPage from '../page/registerPage/RegisterPage';
 import ProfilePage from '../page/profilePage/ProfilePage';
 import MapPage from '../page/mapPage/MapPage';
 
-type IPropsType = {
+type PropsType = {
 	token: string | null 
 }
 
-const Routes: React.FC<IPropsType> = ({token}) => {
-/*
+const Routes: React.FC<PropsType> = ({token}): JSX.Element => {
 	if (!!token) {
 		return (
 			<Switch>
 				<Route exact path='/profile' component={ProfilePage} />
-				<Route path='/map' component={MapPage} />
-				<Redirect to='/' />
+				<Route exact path='/map' component={MapPage} />
+				<Redirect to='/profile' />
 			</Switch>
 		)
-	}*/
+	}
 
 	return (
 		<Switch>

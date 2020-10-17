@@ -42,6 +42,35 @@ const useStyles = makeStyles(() => ({
 	}
 }));
 
+type PropsRouteUserType = {
+	from: string
+	where: string
+	addresses: string[]
+	street: string
+	onChangeField: (street: string, name: string) => void
+	handleClickOrder: () => void
+}
+
+const RouteUser: React.FC<PropsRouteUserType> = ({ addresses, street, from, where, onChangeField, handleClickOrder }): JSX.Element => {
+	const classes = useStyles();
+
+	return (
+		<Card className={classes.root}>
+			<SelectedUI addresses={addresses} onChangeField={onChangeField} street={street} name={'from'} />
+			<SelectedUI addresses={addresses} onChangeField={onChangeField} street={street} name={'where'} />
+			<Button
+				variant="contained"
+				color="primary"
+				onClick={handleClickOrder}
+				disabled={from.length && where.length ? false : true}
+			>
+				Заказать
+			</Button>
+		</Card>
+	)
+}
+
+
 const MapPage = () => {
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -59,12 +88,14 @@ const MapPage = () => {
 	let mapContainer = React.createRef() as any;
 
 	useEffect(() => {
-		setMap(new mapboxgl.Map({
+		const map = new mapboxgl.Map({
 			container: mapContainer,
 			style: 'mapbox://styles/mapbox/streets-v11',
 			center: [lng, lat],
 			zoom: zoom
-		}));
+		});
+
+		setMap(map);
 
 		return function mapRemove() {
 			map.remove()
@@ -86,7 +117,7 @@ const MapPage = () => {
 	const drawRoute = (): void => {
 		if (!map) return;
 
-		if(!route.length){
+		if (!route.length) {
 			map.removeLayer("route");
 			map.removeSource("route");
 			return;
@@ -136,7 +167,6 @@ const MapPage = () => {
 
 	const handleClickOrder = async () => {
 		const route = await fetchAddressList.getСoordinateRoute(from, where);
-		debugger
 		setRoute(route);
 		setHideInfo(false);
 		setWhere('');
@@ -153,20 +183,14 @@ const MapPage = () => {
 		<div ref={el => mapContainer = el} className={classes.mapContainer} >
 			{
 				hideInfo
-					? (
-						<Card className={classes.root}>
-							<SelectedUI addresses={streets} onChangeField={onChangeStreet} street={from} name={'from'} />
-							<SelectedUI addresses={streets} onChangeField={onChangeStreet} street={where} name={'where'} />
-							<Button
-								variant="contained"
-								color="primary"
-								onClick={handleClickOrder}
-								disabled={from.length && where.length ? false : true}
-							>
-								Заказать
-						</Button>
-						</Card>
-					)
+					? <RouteUser
+							from={from}
+							where={where}
+							addresses={streets}
+							onChangeField={onChangeStreet}
+							street={from}
+							handleClickOrder={handleClickOrder}
+						/>
 					: (
 						<Card className={classes.root}>
 							<Typography variant="h6" gutterBottom>
@@ -185,8 +209,6 @@ const MapPage = () => {
 						</Card>
 					)
 			}
-
-
 		</div>
 	)
 }
