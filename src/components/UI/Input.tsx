@@ -28,13 +28,12 @@ const Input = (props: IProps) => {
 	const onChange = props.onChange || function(){};
 	const onFocus = props.onFocus || function(){};
 	const {id, value, placeholder, label, name} = props;
-	const maxLength = props.validation.maxLength;
+	//const maxLength = props.validation.maxLength;
 	const cls = [classes.Input];
 
 	if(isInvalid(props)){
 		cls.push(classes.invalid)
 	}
-
 
 	return (
 		<div className={cls.join(' ')}>
@@ -47,7 +46,6 @@ const Input = (props: IProps) => {
 				name={name}
 				value={value}
 				placeholder={placeholder}
-				maxLength={maxLength}
 				onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.currentTarget.value, name)}
 				onFocus={(e: React.FocusEvent<HTMLInputElement>) => onFocus(e.target.name)}
 			/>

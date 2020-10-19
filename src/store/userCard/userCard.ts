@@ -83,10 +83,11 @@ const postCardError = (message: string): PostCardError => ({type: POST_CARD_ERRO
 const getCardSuccess = (id: string, cardNumber: string, expiryDate: string, cardName: string, cvc: string): GetCardSuccess => ({type: GET_CARD_SUCCESS, id, cardNumber, expiryDate, cardName, cvc});
 
 export const fetchPostUserCard = (cardNumber: string, expiryDate: string, cardName: string, cvc: string): IThunk => 	async(dispatch, getState) => {
+	debugger
 	try{
 		const token = getState().authentication.token
 		const response = await fetchBankCard.fetchPostCard(cardNumber, expiryDate, cardName, cvc, token!);
-
+		debugger
 		if(!response.success){
 			throw new Error(response.error);
 		}

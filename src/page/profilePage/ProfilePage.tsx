@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import BackgroundPage from '../../components/BackgroundPage/BackgroundPage';
 import { v4 as uuidv4 } from 'uuid';
 import Input from '../../components/UI/Input';
@@ -8,6 +8,7 @@ import { RootState } from '../../store/store';
 import CreditCard from './CreditCard';
 import { validateControl } from '../../utilites/validateControl';
 import ModalSaveCard from './ModalSaveCard';
+import MaskedInput from 'react-text-mask';
 
 export type IValidation = {
 	required: boolean
@@ -60,7 +61,7 @@ const ProfilePage = () => {
 		dispatch(fetchGetUserCard())
 	}, []);
 
-	useEffect(() => {
+/*	useEffect(() => {
 		if (!!successGet) {
 			const formControls = { ...state.formControls } as FormControlsType;
 			const newBankCard = { ...bankCard };
@@ -78,7 +79,7 @@ const ProfilePage = () => {
 			setState({ formControls });
 			setBankCard(newBankCard);
 		}
-	}, [successGet])
+	}, [successGet])*/
 
 	const [state, setState] = useState<IState>({
 		formControls: {
@@ -114,7 +115,7 @@ const ProfilePage = () => {
 			expiry: {
 				value: "",
 				name: "expiry",
-				type: "date",
+				type: "expiry",
 				id: uuidv4(),
 				shouldValidate: true,
 				errorMessage: "Выбирете дату",
@@ -127,7 +128,7 @@ const ProfilePage = () => {
 			cvc: {
 				value: "",
 				name: "cvc",
-				type: "number",
+				type: "cvc",
 				id: uuidv4(),
 				shouldValidate: true,
 				errorMessage: "Введите cvc",
@@ -141,18 +142,12 @@ const ProfilePage = () => {
 		}
 	});
 
-	const onChange = (value: string, name: keyof FormControlsType): void => {
+	const onChange = (e: any): void => {
+		const name = e.currentTarget.name as keyof FormControlsType;
+		const value = e.currentTarget.value;
 		const formControls = { ...state.formControls } as FormControlsType;
 		const control = { ...formControls[name] };
 		const newBankCard = { ...bankCard };
-
-		if (control.name === "number" && !!control.validation.maxLength && value.length > control.validation.maxLength) {
-			return;
-		}
-
-		if (control.name === "cvc" && !!control.validation.maxLength && value.length > control.validation.maxLength) {
-			return;
-		}
 
 		control.value = value;
 		control.touched = true;
@@ -169,27 +164,77 @@ const ProfilePage = () => {
 		setFocus(name);
 	}
 
-	const renderInput = ()=> {
+	const renderInput = () => {
 		return (Object.keys(state.formControls) as Array<keyof FormControlsType>).map(name => {
 			const input = state.formControls[name];
-			return <Input {...input} onFocus={onFocus} onChange={onChange} key={input.id} />
+
+			switch (input.type) {
+				case "number": {
+					return (
+						<MaskedInput
+							mask={[/\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+							guide={true}
+							placeholder="____ - ____ - ____ - _____"
+							key={input.id}
+							value={input.value}
+							onChange={onChange as any}
+							name="number"
+						/>
+					)
+				}
+				case "expiry": {
+					return (
+						<MaskedInput
+							mask={[/\d/, /\d/, '/', /\d/, /\d/]}
+							guide={true}
+							placeholder="__ / __"
+							key={input.id}
+							value={input.value}
+							onChange={onChange as any}
+							name="expiry"
+						/>
+					)
+				}
+				case "cvc": {
+					return (
+						<MaskedInput
+							mask={[/\d/, /\d/, /\d/]}
+							key={input.id}
+							value={input.value}
+							onChange={onChange as any}
+							name="cvc"
+						/>
+					)
+				}
+				default: {
+					return (
+						<input
+							type="text"
+							key={input.id}
+							value={input.value}
+							onChange={onChange as any}
+							name="name"
+						/>
+					)
+				}
+			}
 		})
 	}
 
-	const sendDataCard = () => {
+	const sendDataCard = useCallback(() => {
 		dispatch(fetchPostUserCard(
 			state.formControls.number.value,
 			state.formControls.expiry.value,
 			state.formControls.name.value,
 			state.formControls.cvc.value,
 		))
-	}
+	}, [state.formControls, dispatch])
 
 	return (
 		<BackgroundPage>
 			{
 				success
-					? <ModalSaveCard  />
+					? <ModalSaveCard />
 					: <CreditCard
 						bankCard={bankCard}
 						onFocus={onFocus}

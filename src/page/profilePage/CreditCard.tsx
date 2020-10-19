@@ -13,15 +13,20 @@ type PropsType = {
 	renderInput: () => JSX.Element[]
 }
 
+interface TextMaskCustomProps {
+	inputRef: (ref: HTMLInputElement | null) => void;
+  name: string;
+}
+
 const useStyles = makeStyles({
 	cardP: {
 		padding: 15
 	}
 });
 
-const CreditCard = ({bankCard, onFocus, sendDataCard, renderInput}: PropsType): JSX.Element => {
+const CreditCard = ({ bankCard, onFocus, sendDataCard, renderInput }: PropsType): JSX.Element => {
 	const classes = useStyles();
-	
+
 	return (
 		<>
 			<Card className={classes.cardP}>
