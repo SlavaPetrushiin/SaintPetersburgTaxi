@@ -46,18 +46,17 @@ type PropsRouteUserType = {
 	from: string
 	where: string
 	addresses: string[]
-	street: string
 	onChangeField: (street: string, name: string) => void
 	handleClickOrder: () => void
 }
 
-const RouteUser: React.FC<PropsRouteUserType> = ({ addresses, street, from, where, onChangeField, handleClickOrder }): JSX.Element => {
+const RouteUser: React.FC<PropsRouteUserType> = ({ addresses, from, where, onChangeField, handleClickOrder }): JSX.Element => {
 	const classes = useStyles();
 
 	return (
 		<Card className={classes.root}>
-			<SelectedUI addresses={addresses} onChangeField={onChangeField} street={street} name={'from'} />
-			<SelectedUI addresses={addresses} onChangeField={onChangeField} street={street} name={'where'} />
+			<SelectedUI addresses={addresses} onChangeField={onChangeField} street={from} name={'from'} />
+			<SelectedUI addresses={addresses} onChangeField={onChangeField} street={where} name={'where'} />
 			<Button
 				variant="contained"
 				color="primary"

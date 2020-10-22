@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import classes from './ProfilePage.module.css';
 import BackgroundPage from '../../components/BackgroundPage/BackgroundPage';
 import { v4 as uuidv4 } from 'uuid';
-import Input from '../../components/UI/Input';
 import { fetchPostUserCard, fetchGetUserCard } from '../../store/userCard/userCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
@@ -61,7 +61,7 @@ const ProfilePage = () => {
 		dispatch(fetchGetUserCard())
 	}, []);
 
-/*	useEffect(() => {
+	useEffect(() => {
 		if (!!successGet) {
 			const formControls = { ...state.formControls } as FormControlsType;
 			const newBankCard = { ...bankCard };
@@ -79,7 +79,7 @@ const ProfilePage = () => {
 			setState({ formControls });
 			setBankCard(newBankCard);
 		}
-	}, [successGet])*/
+	}, [successGet])
 
 	const [state, setState] = useState<IState>({
 		formControls: {
@@ -179,6 +179,7 @@ const ProfilePage = () => {
 							value={input.value}
 							onChange={onChange as any}
 							name="number"
+							className={classes.fieldCard}
 						/>
 					)
 				}
@@ -192,6 +193,7 @@ const ProfilePage = () => {
 							value={input.value}
 							onChange={onChange as any}
 							name="expiry"
+							className={classes.fieldCard}
 						/>
 					)
 				}
@@ -203,6 +205,7 @@ const ProfilePage = () => {
 							value={input.value}
 							onChange={onChange as any}
 							name="cvc"
+							className={classes.fieldCard}
 						/>
 					)
 				}
@@ -214,6 +217,7 @@ const ProfilePage = () => {
 							value={input.value}
 							onChange={onChange as any}
 							name="name"
+							className={classes.fieldCard}
 						/>
 					)
 				}
