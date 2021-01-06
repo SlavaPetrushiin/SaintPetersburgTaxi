@@ -17,7 +17,7 @@
     "@types/react-text-mask": "^5.4.6",
     "@types/redux": "^3.6.0",
     "@types/uuid": "^8.0.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "mapbox-gl": "^1.12.0",
     "react": "^16.13.1",
     "react-credit-cards": "^0.8.3",
